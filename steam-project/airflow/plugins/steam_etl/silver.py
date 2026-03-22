@@ -14,7 +14,7 @@ from datetime import datetime
 import pandas as pd
 from airflow.exceptions import AirflowException
 
-from .io_utils import (
+from steam_etl.io_utils import (
     DATA_FOLDER,
     get_last_processed_date,
     safe_read_csv,
@@ -34,11 +34,22 @@ def transform_steam_api_to_silver(**context):
     df = safe_read_csv(file_path, "steam_api_bronze")
     original_count = len(df)
 
+    expected_columns = [
+        "appid",
+        "price_usd",
+        "price_pln",
+        "release_date",
+        "languages",
+        "genre",
+    ]
+    for col in expected_columns:
+        if col not in df.columns:
+            df[col] = pd.Series(dtype="object")
+
     last_processed_date = get_last_processed_date("steam_api")
     if last_processed_date:
         task_logger.info("Last processed steam_api date: %s", last_processed_date)
 
-    df = df.drop(columns=[c for c in ["metacritic_score", "series"] if c in df.columns])
     df["release_date"] = pd.to_datetime(df["release_date"], errors="coerce")
     df["release_date_missing"] = df["release_date"].isna()
 
@@ -154,11 +165,31 @@ def transform_to_normalized_tables(**context):
 
     if "languages" in df.columns:
         languages = df[["appid", "languages"]].copy()
-        languages["language_raw"] = languages["languages"].str.split(",")
+        languages["language_raw"] = languages["languages"].fillna("").astype(str).str.split(",")
         languages = languages.explode("language_raw").reset_index(drop=True)
         languages = languages.drop(columns=["languages"])
-        languages["audio"] = languages["language_raw"].str.contains(r"<strong>\*</strong>", regex=True, na=False)
-        languages["language"] = languages["language_raw"].str.replace(r"<strong>\*</strong>", "", regex=True).str.strip()
+        languages["audio"] = languages["language_raw"].str.contains(r"<strong>\*</strong>|\*", regex=True, na=False)
+        languages["language"] = (
+            languages["language_raw"]
+            .str.replace(r"<br\s*/?>", " ", regex=True)
+            .str.replace(r"<strong>\*</strong>", " ", regex=True)
+            .str.replace(r"</?[^>]+>", " ", regex=True)
+            .str.replace(r"\*", " ", regex=True)
+            .str.replace(r"(?i)languages with full audio support", "", regex=True)
+            .str.replace(r"\s+", " ", regex=True)
+            .str.strip()
+        )
+        languages = languages[
+            languages["language"].notna()
+            & (languages["language"] != "")
+            & (~languages["language"].str.fullmatch(r"(?i)languages with full audio support", na=False))
+        ]
+        languages = (
+            languages.groupby(["appid", "language"], as_index=False)["audio"]
+            .max()
+            .sort_values(["appid", "language"]) 
+            .reset_index(drop=True)
+        )
         languages = languages[["appid", "language", "audio"]]
         safe_write_parquet(languages, os.path.join(silver_folder, f"languages_{ds}.parquet"), "languages_normalized")
         save_last_processed_date("languages_normalized", ds)

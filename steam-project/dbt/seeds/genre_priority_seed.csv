@@ -1,0 +1,20 @@
+genre,priority
+action,10
+rpg,20
+strategy,30
+simulation,40
+adventure,50
+shooter,60
+sports,70
+racing,80
+fighting,90
+horror,100
+survival,110
+sandbox,120
+puzzle,130
+platformer,140
+mmorpg,150
+indie,160
+casual,170
+free to play,180
+other,999

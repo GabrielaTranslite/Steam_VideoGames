@@ -1,4 +1,4 @@
-"""Bronze-layer ingestion callables for the Steam ETL DAG.
+﻿"""Bronze-layer ingestion callables for the Steam ETL DAG.
 
 This module contains API download logic only:
 - SteamSpy top100 extraction
@@ -6,19 +6,39 @@ This module contains API download logic only:
 """
 
 import os
+import random
+import time
+import logging
 from datetime import datetime
 
 import pandas as pd
 import requests
 
-from .io_utils import DATA_FOLDER
+from steam_etl.io_utils import DATA_FOLDER
+
+logger = logging.getLogger(__name__)
 
 STEAMSPY_API_URL = "https://steamspy.com/api.php?request=top100in2weeks"
+STEAMSPY_TOP_N = 100
 STEAM_STORE_BASE = "https://store.steampowered.com/api"
+STEAM_STORE_TIMEOUT_SECONDS = 15
+STEAM_STORE_MAX_RETRIES = 5
+STEAM_STORE_INTER_REQUEST_SLEEP_SECONDS = 2.0
+STEAM_STORE_RETRY_BASE_SLEEP_SECONDS = 2.0
+STEAM_STORE_RETRY_MAX_SLEEP_SECONDS = 600.0
+STEAM_STORE_BATCH_SIZE = 1
+STEAM_STORE_COLUMNS = [
+    "appid",
+    "price_usd",
+    "price_pln",
+    "release_date",
+    "languages",
+    "genre",
+]
 
 
 def fetch_and_save_top100_games(**context):
-    """Download SteamSpy top 100 and store as local bronze CSV."""
+    """Download SteamSpy top 100 appids and store as local bronze CSV."""
     ds = context.get("ds")
 
     headers = {
@@ -41,6 +61,8 @@ def fetch_and_save_top100_games(**context):
             game_details["appid"] = app_id
         games_list.append(game_details)
 
+    games_list = games_list[:STEAMSPY_TOP_N]
+
     df = pd.DataFrame(games_list)
     os.makedirs(DATA_FOLDER, exist_ok=True)
 
@@ -56,79 +78,175 @@ def fetch_and_save_top100_games(**context):
 
 
 def fetch_steam_store_details(**context):
-    """Enrich top100 app ids with Steam Store metadata and save bronze CSV."""
+    """Enrich top100 app ids with selected Steam Store metadata and save bronze CSV."""
     ds = context.get("ds") or datetime.now().strftime("%Y-%m-%d")
     ti = context.get("ti")
     games_details = ti.xcom_pull(task_ids="fetch_and_save_top100_games_to_local", key="top100_games") or []
 
-    if not games_details:
-        return None
-
-    rows = []
-    for game in games_details:
-        appid = game.get("appid")
-
-        def fetch_store_data(cc: str):
-            store_url = f"{STEAM_STORE_BASE}/appdetails?appids={appid}&cc={cc}&l=en"
-            resp = requests.get(store_url)
-            if resp.status_code != 200:
-                return None
-
-            resp_details = resp.json()
-            if not resp_details or str(appid) not in resp_details or not resp_details[str(appid)].get("success"):
-                return None
-            return resp_details[str(appid)]["data"]
-
-        game_details = fetch_store_data("us")
-        game_details_pl = fetch_store_data("pl")
-        if not game_details and not game_details_pl:
-            continue
-
-        price_usd = game_details.get("price_overview", {}).get("final_formatted") if game_details else None
-        price_pln = game_details_pl.get("price_overview", {}).get("final_formatted") if game_details_pl else None
-
-        metadata = game_details or game_details_pl
-        release_date = metadata.get("release_date", {}).get("date")
-        metacritic_score = metadata.get("metacritic", {}).get("score")
-
-        languages = game_details.get("supported_languages") or game_details.get("languages")
-        genres = game_details.get("genres") or []
-        genre = ", ".join([g.get("description", "") for g in genres]) if isinstance(genres, list) else genres
-
-        developer = game_details.get("developers")
-        if isinstance(developer, list):
-            developer = ", ".join(developer)
-
-        publisher = game_details.get("publishers")
-        if isinstance(publisher, list):
-            publisher = ", ".join(publisher)
-
-        series_data = game_details.get("series")
-        series = ", ".join(series_data) if isinstance(series_data, list) else series_data
-
-        rows.append(
-            {
-                "appid": appid,
-                "title": metadata.get("name"),
-                "price_usd": price_usd,
-                "price_pln": price_pln,
-                "release_date": release_date,
-                "metacritic_score": metacritic_score,
-                "languages": languages,
-                "genre": genre,
-                "developer": developer,
-                "publisher": publisher,
-                "series": series,
-            }
-        )
-
-    if not rows:
-        return None
-
-    df = pd.DataFrame(rows)
-    os.makedirs(DATA_FOLDER, exist_ok=True)
-
     file_name = f"steam_store_details_{ds}.csv"
     file_path = os.path.join(DATA_FOLDER, file_name)
+
+    if not games_details:
+        os.makedirs(DATA_FOLDER, exist_ok=True)
+        pd.DataFrame(columns=STEAM_STORE_COLUMNS).to_csv(file_path, index=False)
+        return file_name
+
+    appids = []
+    for game in games_details:
+        raw_appid = game.get("appid")
+        if raw_appid is None:
+            continue
+        try:
+            appids.append(int(raw_appid))
+        except (TypeError, ValueError):
+            continue
+
+    total_appids = len(appids)
+    total_batches = (total_appids + STEAM_STORE_BATCH_SIZE - 1) // STEAM_STORE_BATCH_SIZE
+    logger.info(
+        "Steam Store enrichment starting: appids=%s batch_size=%s total_batches=%s",
+        total_appids,
+        STEAM_STORE_BATCH_SIZE,
+        total_batches,
+    )
+
+    def chunked(values, size):
+        for idx in range(0, len(values), size):
+            yield values[idx : idx + size]
+
+    def throttled_sleep():
+        sleep_for = STEAM_STORE_INTER_REQUEST_SLEEP_SECONDS + random.uniform(2.0, 5.0)
+        logger.info("Steam Store throttle sleep: %.2fs", sleep_for)
+        time.sleep(sleep_for)
+
+    def fetch_store_batch(appid_batch, cc: str, batch_idx: int):
+        appids_param = ",".join(str(appid) for appid in appid_batch)
+        store_url = f"{STEAM_STORE_BASE}/appdetails?appids={appids_param}&cc={cc}&l=en"
+
+        # Steam Store heavily rate-limits burst traffic; retry with backoff on 429/5xx.
+        for attempt in range(STEAM_STORE_MAX_RETRIES + 1):
+            try:
+                resp = requests.get(store_url, timeout=STEAM_STORE_TIMEOUT_SECONDS)
+            except requests.RequestException:
+                resp = None
+
+            if resp is not None and resp.status_code == 200:
+                try:
+                    payload = resp.json()
+                except ValueError:
+                    return {}
+
+                out = {}
+                for appid in appid_batch:
+                    app_payload = payload.get(str(appid), {})
+                    if app_payload.get("success") and isinstance(app_payload.get("data"), dict):
+                        out[appid] = app_payload["data"]
+                return out
+
+            status = resp.status_code if resp is not None else None
+            if status == 400:
+                # Some Steam Store environments reject multi-appid requests; split and retry in smaller chunks.
+                if len(appid_batch) == 1:
+                    return {}
+
+                mid = len(appid_batch) // 2
+                left = fetch_store_batch(appid_batch[:mid], cc, batch_idx)
+                right = fetch_store_batch(appid_batch[mid:], cc, batch_idx)
+                left.update(right)
+                return left
+
+            if status not in {429, 500, 502, 503, 504}:
+                return {}
+
+            sleep_for = min(STEAM_STORE_RETRY_MAX_SLEEP_SECONDS, STEAM_STORE_RETRY_BASE_SLEEP_SECONDS * (2 ** attempt))
+
+            if status == 429 and resp is not None:
+                retry_after = resp.headers.get("Retry-After")
+                if retry_after:
+                    try:
+                        sleep_for = max(sleep_for, float(retry_after))
+                    except ValueError:
+                        pass
+
+            logger.info(
+                "Steam Store retry: batch=%s/%s region=%s attempt=%s status=%s sleep=%.2fs",
+                batch_idx,
+                total_batches,
+                cc,
+                attempt + 1,
+                status,
+                sleep_for,
+            )
+            time.sleep(sleep_for)
+
+        logger.warning(
+            "Steam Store batch failed after retries: batch=%s/%s region=%s size=%s",
+            batch_idx,
+            total_batches,
+            cc,
+            len(appid_batch),
+        )
+        return {}
+
+    rows = []
+    processed_any = 0
+    for batch_idx, appid_batch in enumerate(chunked(appids, STEAM_STORE_BATCH_SIZE), start=1):
+        logger.info(
+            "Processing Steam Store batch %s/%s: size=%s first_appid=%s last_appid=%s",
+            batch_idx,
+            total_batches,
+            len(appid_batch),
+            appid_batch[0],
+            appid_batch[-1],
+        )
+
+        us_batch = fetch_store_batch(appid_batch, "us", batch_idx)
+        throttled_sleep()
+        pl_batch = fetch_store_batch(appid_batch, "pl", batch_idx)
+        throttled_sleep()
+
+        batch_any = sum(1 for appid in appid_batch if appid in us_batch or appid in pl_batch)
+        processed_any += batch_any
+        logger.info(
+            "Batch %s/%s results: us_success=%s pl_success=%s any_success=%s cumulative_any_success=%s",
+            batch_idx,
+            total_batches,
+            len(us_batch),
+            len(pl_batch),
+            batch_any,
+            processed_any,
+        )
+
+        for appid in appid_batch:
+            game_details = us_batch.get(appid)
+            game_details_pl = pl_batch.get(appid)
+            if not game_details and not game_details_pl:
+                continue
+
+            price_usd = game_details.get("price_overview", {}).get("final_formatted") if game_details else None
+            price_pln = game_details_pl.get("price_overview", {}).get("final_formatted") if game_details_pl else None
+
+            metadata = game_details or game_details_pl
+            release_date = metadata.get("release_date", {}).get("date")
+
+            languages = metadata.get("supported_languages") or metadata.get("languages")
+            genres = metadata.get("genres") or []
+            genre = ", ".join([g.get("description", "") for g in genres]) if isinstance(genres, list) else genres
+
+            rows.append(
+                {
+                    "appid": appid,
+                    "price_usd": price_usd,
+                    "price_pln": price_pln,
+                    "release_date": release_date,
+                    "languages": languages,
+                    "genre": genre,
+                }
+            )
+
+    df = pd.DataFrame(rows, columns=STEAM_STORE_COLUMNS)
+    logger.info("Steam Store enrichment complete: output_rows=%s input_appids=%s", len(df), total_appids)
+    os.makedirs(DATA_FOLDER, exist_ok=True)
+
     df.to_csv(file_path, index=False)
     return file_name

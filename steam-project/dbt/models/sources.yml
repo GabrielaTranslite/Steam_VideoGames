@@ -1,0 +1,16 @@
+version: 2
+
+sources:
+  - name: silver_external
+    description: External BigQuery tables over silver parquet files stored in GCS.
+    database: "{{ env_var('DBT_GOOGLE_PROJECT', 'kestra-sandbox-486017') }}"
+    schema: "{{ env_var('DBT_BIGQUERY_SOURCE_DATASET', 'steam_external') }}"
+    tables:
+      - name: steam_api_raw
+      - name: steamspy_raw
+      - name: games_normalized
+      - name: genres_normalized
+      - name: languages_normalized
+      - name: steam_api_silver
+      - name: steamspy_silver
+      - name: languages

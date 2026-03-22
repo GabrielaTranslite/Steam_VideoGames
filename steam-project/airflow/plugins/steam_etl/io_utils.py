@@ -8,13 +8,27 @@ This module centralizes:
 
 import logging
 import os
+import random
+import socket
+import time
 from typing import Optional
 
 import pandas as pd
 from airflow.exceptions import AirflowException
+from airflow.providers.google.cloud.hooks.gcs import GCSHook
+from google.auth.exceptions import TransportError
+from requests.exceptions import ConnectionError as RequestsConnectionError
+from requests.exceptions import ReadTimeout
+from requests.exceptions import RequestException
 
 logger = logging.getLogger(__name__)
 DATA_FOLDER = os.path.join(os.getenv("AIRFLOW_HOME", "/opt/airflow"), "data")
+
+GCS_UPLOAD_TIMEOUT_SECONDS = 180
+GCS_UPLOAD_NUM_MAX_ATTEMPTS = 3
+GCS_UPLOAD_OUTER_RETRIES = 5
+GCS_UPLOAD_RETRY_BASE_SLEEP_SECONDS = 5
+GCS_UPLOAD_RETRY_MAX_SLEEP_SECONDS = 120
 
 
 def get_last_processed_date(table_name: str) -> Optional[str]:
@@ -71,7 +85,8 @@ def safe_read_csv(file_path: str, table_name: str) -> pd.DataFrame:
     except FileNotFoundError as exc:
         raise AirflowException(str(exc)) from exc
     except pd.errors.EmptyDataError as exc:
-        raise AirflowException(f"Empty CSV for {table_name}: {exc}") from exc
+        logger.warning("Empty CSV for %s at %s; returning empty DataFrame", table_name, file_path)
+        return pd.DataFrame()
     except Exception as exc:
         raise AirflowException(f"Failed reading {table_name}: {exc}") from exc
 
@@ -85,3 +100,69 @@ def safe_write_parquet(df: pd.DataFrame, output_path: str, table_name: str) -> b
         return True
     except Exception as exc:
         raise AirflowException(f"Failed writing {table_name} parquet: {exc}") from exc
+
+
+def upload_file_to_gcs(
+    src: str,
+    dst: str,
+    bucket: str,
+    gcp_conn_id: str = "google_cloud_default",
+    mime_type: Optional[str] = None,
+) -> str:
+    """Upload a local file to GCS with retries around transient auth/network failures."""
+    if not os.path.exists(src):
+        raise AirflowException(f"Local file for GCS upload not found: {src}")
+
+    hook = GCSHook(gcp_conn_id=gcp_conn_id)
+    retriable_exceptions = (
+        TransportError,
+        ReadTimeout,
+        RequestsConnectionError,
+        RequestException,
+        socket.timeout,
+        TimeoutError,
+    )
+
+    for attempt in range(1, GCS_UPLOAD_OUTER_RETRIES + 1):
+        try:
+            logger.info(
+                "Uploading file to GCS: src=%s bucket=%s dst=%s attempt=%s/%s",
+                src,
+                bucket,
+                dst,
+                attempt,
+                GCS_UPLOAD_OUTER_RETRIES,
+            )
+            hook.upload(
+                bucket_name=bucket,
+                object_name=dst,
+                filename=src,
+                mime_type=mime_type,
+                timeout=GCS_UPLOAD_TIMEOUT_SECONDS,
+                num_max_attempts=GCS_UPLOAD_NUM_MAX_ATTEMPTS,
+            )
+            logger.info("GCS upload completed: bucket=%s dst=%s", bucket, dst)
+            return dst
+        except retriable_exceptions as exc:
+            if attempt == GCS_UPLOAD_OUTER_RETRIES:
+                raise AirflowException(
+                    f"Failed uploading {src} to gs://{bucket}/{dst} after retries: {exc}"
+                ) from exc
+
+            sleep_for = min(
+                GCS_UPLOAD_RETRY_MAX_SLEEP_SECONDS,
+                GCS_UPLOAD_RETRY_BASE_SLEEP_SECONDS * (2 ** (attempt - 1)),
+            ) + random.uniform(0.0, 1.0)
+            logger.warning(
+                "Transient GCS upload failure: src=%s bucket=%s dst=%s attempt=%s/%s error=%s sleep=%.2fs",
+                src,
+                bucket,
+                dst,
+                attempt,
+                GCS_UPLOAD_OUTER_RETRIES,
+                exc,
+                sleep_for,
+            )
+            time.sleep(sleep_for)
+        except Exception as exc:
+            raise AirflowException(f"Non-retryable GCS upload failure for {src}: {exc}") from exc

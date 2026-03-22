@@ -1,0 +1,13 @@
+steam_analytics:
+  target: dev
+  outputs:
+    dev:
+      type: bigquery
+      method: service-account
+      keyfile: /opt/airflow/gcp/credentials.json
+      project: "{{ env_var('DBT_GOOGLE_PROJECT', 'kestra-sandbox-486017') }}"
+      dataset: "{{ env_var('DBT_BIGQUERY_DATASET', 'steam_gold') }}"
+      location: US
+      threads: 4
+      job_execution_timeout_seconds: 300
+      job_retries: 1

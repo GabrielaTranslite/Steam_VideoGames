@@ -32,6 +32,11 @@ services:
       AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
       AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
       GOOGLE_APPLICATION_CREDENTIALS: /opt/airflow/gcp/credentials.json
+      DBT_GOOGLE_PROJECT: ${DBT_GOOGLE_PROJECT:-kestra-sandbox-486017}
+      DBT_BIGQUERY_DATASET: ${DBT_BIGQUERY_DATASET:-steam_gold}
+      DBT_BIGQUERY_STAGING_DATASET: ${DBT_BIGQUERY_STAGING_DATASET:-steam_staging}
+      DBT_BIGQUERY_SOURCE_DATASET: ${DBT_BIGQUERY_SOURCE_DATASET:-steam_external}
+      DBT_GCS_BUCKET: ${GCP_BUCKET_NAME}
       AIRFLOW__LOGGING__BASE_LOG_FOLDER: '/opt/airflow/logs' # Upewniamy się, że to jest ścieżka do woluminu
       AIRFLOW__LOGGING__REMOTE_LOGGING: 'False' # Jawnie wyłączamy zdalne logowanie
       AIRFLOW__LOGGING__REMOTE_LOG_CONN_ID: '' # Upewniamy się, że to jest puste
@@ -39,10 +44,12 @@ services:
       AIRFLOW__LOGGING__TASK_HANDLER: 'airflow.utils.log.file_task_handler.FileTaskHandler' # Użyj file handlera
       AIRFLOW__WEBSERVER__LOG_FETCH_CRITERIA: 'file' # Webserver ma preferować czytanie logów z plików
       AIRFLOW__WEBSERVER__WEB_SERVER_WORKER_TIMEOUT: '120' # Zwiększ timeout, czasem UI potrzebuje więcej czasu
+      DBT_PROFILES_DIR: /opt/airflow/dbt
     volumes:
       - ./airflow/dags:/opt/airflow/dags
       - ./airflow/plugins:/opt/airflow/plugins
       - ./data:/opt/airflow/data
+      - ./dbt:/opt/airflow/dbt
       - ./gcp:/opt/airflow/gcp
       - ./logs:/opt/airflow/logs
     ports:
@@ -71,6 +78,11 @@ services:
       AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
       AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
       GOOGLE_APPLICATION_CREDENTIALS: /opt/airflow/gcp/credentials.json
+      DBT_GOOGLE_PROJECT: ${DBT_GOOGLE_PROJECT:-kestra-sandbox-486017}
+      DBT_BIGQUERY_DATASET: ${DBT_BIGQUERY_DATASET:-steam_gold}
+      DBT_BIGQUERY_STAGING_DATASET: ${DBT_BIGQUERY_STAGING_DATASET:-steam_staging}
+      DBT_BIGQUERY_SOURCE_DATASET: ${DBT_BIGQUERY_SOURCE_DATASET:-steam_external}
+      DBT_GCS_BUCKET: ${GCP_BUCKET_NAME}
       AIRFLOW__LOGGING__BASE_LOG_FOLDER: '/opt/airflow/logs' # Upewniamy się, że to jest ścieżka do woluminu
       AIRFLOW__LOGGING__REMOTE_LOGGING: 'False' # Jawnie wyłączamy zdalne logowanie
       AIRFLOW__LOGGING__REMOTE_LOG_CONN_ID: '' # Upewniamy się, że to jest puste
@@ -78,10 +90,12 @@ services:
       AIRFLOW__LOGGING__TASK_HANDLER: 'airflow.utils.log.file_task_handler.FileTaskHandler' # Użyj file handlera
       AIRFLOW__WEBSERVER__LOG_FETCH_CRITERIA: 'file' # Webserver ma preferować czytanie logów z plików
       AIRFLOW__WEBSERVER__WEB_SERVER_WORKER_TIMEOUT: '120' # Zwiększ timeout, czasem UI potrzebuje więcej czasu 
+      DBT_PROFILES_DIR: /opt/airflow/dbt
     volumes:
       - ./airflow/dags:/opt/airflow/dags
       - ./airflow/plugins:/opt/airflow/plugins
       - ./data:/opt/airflow/data
+      - ./dbt:/opt/airflow/dbt
       - ./gcp:/opt/airflow/gcp
       - ./logs:/opt/airflow/logs
     command: scheduler

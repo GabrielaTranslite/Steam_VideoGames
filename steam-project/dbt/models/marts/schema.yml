@@ -1,0 +1,50 @@
+version: 2
+
+models:
+  - name: fct_games_daily
+    description: Daily game snapshot fact table loaded incrementally by snapshot date.
+    columns:
+      - name: appid
+        data_tests:
+          - not_null
+      - name: snapshot_date
+        data_tests:
+          - not_null
+      - name: primary_genre
+        data_tests:
+          - not_null
+
+  - name: fct_games
+    description: Core game fact table combining Steam API and SteamSpy metrics.
+    columns:
+      - name: appid
+        data_tests:
+          - not_null
+          - unique
+      - name: title
+        data_tests:
+          - not_null
+
+  - name: dim_genres
+    description: Distinct genre memberships per game.
+    columns:
+      - name: appid
+        data_tests:
+          - not_null
+      - name: genre
+        data_tests:
+          - not_null
+
+  - name: dim_languages
+    description: Distinct language availability per game.
+    columns:
+      - name: language_key
+        data_tests:
+          - not_null
+          - unique
+      - name: appid
+        data_tests:
+          - not_null
+      - name: language
+        data_tests:
+          - not_null

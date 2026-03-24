@@ -1,0 +1,423 @@
+Attaching to steam-project_airflow-scheduler_1
+[36mairflow-scheduler_1  |[0m 
+[36mairflow-scheduler_1  |[0m ERROR: You need to initialize the database. Please run `airflow db init`. Make sure the command is run using Airflow version 2.7.2.
+[36mairflow-scheduler_1  |[0m 
+[36mairflow-scheduler_1  |[0m ERROR: You need to initialize the database. Please run `airflow db init`. Make sure the command is run using Airflow version 2.7.2.
+[36mairflow-scheduler_1  |[0m 
+[36mairflow-scheduler_1  |[0m ERROR: You need to initialize the database. Please run `airflow db init`. Make sure the command is run using Airflow version 2.7.2.
+[36mairflow-scheduler_1  |[0m 
+[36mairflow-scheduler_1  |[0m ERROR: You need to initialize the database. Please run `airflow db init`. Make sure the command is run using Airflow version 2.7.2.
+[36mairflow-scheduler_1  |[0m 
+[36mairflow-scheduler_1  |[0m ERROR: You need to initialize the database. Please run `airflow db init`. Make sure the command is run using Airflow version 2.7.2.
+[36mairflow-scheduler_1  |[0m 
+[36mairflow-scheduler_1  |[0m ERROR: You need to initialize the database. Please run `airflow db init`. Make sure the command is run using Airflow version 2.7.2.
+[36mairflow-scheduler_1  |[0m 
+[36mairflow-scheduler_1  |[0m ERROR: You need to initialize the database. Please run `airflow db init`. Make sure the command is run using Airflow version 2.7.2.
+[36mairflow-scheduler_1  |[0m 
+[36mairflow-scheduler_1  |[0m ERROR: You need to initialize the database. Please run `airflow db init`. Make sure the command is run using Airflow version 2.7.2.
+[36mairflow-scheduler_1  |[0m 
+[36mairflow-scheduler_1  |[0m ERROR: You need to initialize the database. Please run `airflow db init`. Make sure the command is run using Airflow version 2.7.2.
+[36mairflow-scheduler_1  |[0m 
+[36mairflow-scheduler_1  |[0m ERROR: You need to initialize the database. Please run `airflow db init`. Make sure the command is run using Airflow version 2.7.2.
+[36mairflow-scheduler_1  |[0m 
+[36mairflow-scheduler_1  |[0m   ____________       _____________
+[36mairflow-scheduler_1  |[0m  ____    |__( )_________  __/__  /________      __
+[36mairflow-scheduler_1  |[0m ____  /| |_  /__  ___/_  /_ __  /_  __ \_ | /| / /
+[36mairflow-scheduler_1  |[0m ___  ___ |  / _  /   _  __/ _  / / /_/ /_ |/ |/ /
+[36mairflow-scheduler_1  |[0m  _/_/  |_/_/  /_/    /_/    /_/  \____/____/|__/
+[36mairflow-scheduler_1  |[0m [[34m2026-03-17T09:44:05.827+0000[0m] {[34mexecutor_loader.py:[0m117} INFO[0m - Loaded executor: LocalExecutor[0m
+[36mairflow-scheduler_1  |[0m [2026-03-17 09:44:05 +0000] [28] [INFO] Starting gunicorn 21.2.0
+[36mairflow-scheduler_1  |[0m [2026-03-17 09:44:05 +0000] [28] [INFO] Listening at: http://[::]:8793 (28)
+[36mairflow-scheduler_1  |[0m [2026-03-17 09:44:05 +0000] [28] [INFO] Using worker: sync
+[36mairflow-scheduler_1  |[0m [2026-03-17 09:44:05 +0000] [29] [INFO] Booting worker with pid: 29
+[36mairflow-scheduler_1  |[0m [[34m2026-03-17T09:44:05.884+0000[0m] {[34mscheduler_job_runner.py:[0m798} INFO[0m - Starting the scheduler[0m
+[36mairflow-scheduler_1  |[0m [[34m2026-03-17T09:44:05.884+0000[0m] {[34mscheduler_job_runner.py:[0m805} INFO[0m - Processing each file at most -1 times[0m
+[36mairflow-scheduler_1  |[0m [2026-03-17 09:44:05 +0000] [99] [INFO] Booting worker with pid: 99
+[36mairflow-scheduler_1  |[0m [[34m2026-03-17T09:44:06.005+0000[0m] {[34mmanager.py:[0m166} INFO[0m - Launched DagFileProcessorManager with pid: 166[0m
+[36mairflow-scheduler_1  |[0m [[34m2026-03-17T09:44:06.007+0000[0m] {[34mscheduler_job_runner.py:[0m1598} INFO[0m - Adopting or resetting orphaned tasks for active dag runs[0m
+[36mairflow-scheduler_1  |[0m [[34m2026-03-17T09:44:06.013+0000[0m] {[34msettings.py:[0m59} INFO[0m - Configured default timezone Timezone('UTC')[0m
+[36mairflow-scheduler_1  |[0m [[34m2026-03-17T09:44:31.212+0000[0m] {[34mdag.py:[0m3722} INFO[0m - Setting next_dagrun for steamspy_top100_etl to 2026-03-17T00:00:00+00:00, run_after=2026-03-18T00:00:00+00:00[0m
+[36mairflow-scheduler_1  |[0m [[34m2026-03-17T09:44:31.251+0000[0m] {[34mscheduler_job_runner.py:[0m414} INFO[0m - 2 tasks up for execution:
+[36mairflow-scheduler_1  |[0m 	<TaskInstance: steamspy_top100_etl.fetch_and_save_top100_games_to_local scheduled__2026-03-16T00:00:00+00:00 [scheduled]>
+[36mairflow-scheduler_1  |[0m 	<TaskInstance: steamspy_top100_etl.fetch_and_save_top100_games_to_local manual__2026-03-17T09:44:30.263957+00:00 [scheduled]>[0m
+[36mairflow-scheduler_1  |[0m [[34m2026-03-17T09:44:31.251+0000[0m] {[34mscheduler_job_runner.py:[0m477} INFO[0m - DAG steamspy_top100_etl has 0/16 running and queued tasks[0m
+[36mairflow-scheduler_1  |[0m [[34m2026-03-17T09:44:31.251+0000[0m] {[34mscheduler_job_runner.py:[0m477} INFO[0m - DAG steamspy_top100_etl has 1/16 running and queued tasks[0m
+[36mairflow-scheduler_1  |[0m [[34m2026-03-17T09:44:31.251+0000[0m] {[34mscheduler_job_runner.py:[0m593} INFO[0m - Setting the following tasks to queued state:
+[36mairflow-scheduler_1  |[0m 	<TaskInstance: steamspy_top100_etl.fetch_and_save_top100_games_to_local scheduled__2026-03-16T00:00:00+00:00 [scheduled]>
+[36mairflow-scheduler_1  |[0m 	<TaskInstance: steamspy_top100_etl.fetch_and_save_top100_games_to_local manual__2026-03-17T09:44:30.263957+00:00 [scheduled]>[0m
+[36mairflow-scheduler_1  |[0m [[34m2026-03-17T09:44:31.252+0000[0m] {[34mtaskinstance.py:[0m1441} WARNING[0m - cannot record scheduled_duration for task fetch_and_save_top100_games_to_local because previous state change time has not been saved[0m
+[36mairflow-scheduler_1  |[0m [[34m2026-03-17T09:44:31.253+0000[0m] {[34mtaskinstance.py:[0m1441} WARNING[0m - cannot record scheduled_duration for task fetch_and_save_top100_games_to_local because previous state change time has not been saved[0m
+[36mairflow-scheduler_1  |[0m [[34m2026-03-17T09:44:31.253+0000[0m] {[34mscheduler_job_runner.py:[0m636} INFO[0m - Sending TaskInstanceKey(dag_id='steamspy_top100_etl', task_id='fetch_and_save_top100_games_to_local', run_id='scheduled__2026-03-16T00:00:00+00:00', try_number=1, map_index=-1) to executor with priority 2 and queue default[0m
+[36mairflow-scheduler_1  |[0m [[34m2026-03-17T09:44:31.254+0000[0m] {[34mbase_executor.py:[0m144} INFO[0m - Adding to queue: ['airflow', 'tasks', 'run', 'steamspy_top100_etl', 'fetch_and_save_top100_games_to_local', 'scheduled__2026-03-16T00:00:00+00:00', '--local', '--subdir', 'DAGS_FOLDER/steamspy_top100_dag.py'][0m
+[36mairflow-scheduler_1  |[0m [[34m2026-03-17T09:44:31.254+0000[0m] {[34mscheduler_job_runner.py:[0m636} INFO[0m - Sending TaskInstanceKey(dag_id='steamspy_top100_etl', task_id='fetch_and_save_top100_games_to_local', run_id='manual__2026-03-17T09:44:30.263957+00:00', try_number=1, map_index=-1) to executor with priority 2 and queue default[0m
+[36mairflow-scheduler_1  |[0m [[34m2026-03-17T09:44:31.254+0000[0m] {[34mbase_executor.py:[0m144} INFO[0m - Adding to queue: ['airflow', 'tasks', 'run', 'steamspy_top100_etl', 'fetch_and_save_top100_games_to_local', 'manual__2026-03-17T09:44:30.263957+00:00', '--local', '--subdir', 'DAGS_FOLDER/steamspy_top100_dag.py'][0m
+[36mairflow-scheduler_1  |[0m [[34m2026-03-17T09:44:31.256+0000[0m] {[34mlocal_executor.py:[0m87} INFO[0m - QueuedLocalWorker running ['airflow', 'tasks', 'run', 'steamspy_top100_etl', 'fetch_and_save_top100_games_to_local', 'scheduled__2026-03-16T00:00:00+00:00', '--local', '--subdir', 'DAGS_FOLDER/steamspy_top100_dag.py'][0m
+[36mairflow-scheduler_1  |[0m [[34m2026-03-17T09:44:31.257+0000[0m] {[34mlocal_executor.py:[0m87} INFO[0m - QueuedLocalWorker running ['airflow', 'tasks', 'run', 'steamspy_top100_etl', 'fetch_and_save_top100_games_to_local', 'manual__2026-03-17T09:44:30.263957+00:00', '--local', '--subdir', 'DAGS_FOLDER/steamspy_top100_dag.py'][0m
+[36mairflow-scheduler_1  |[0m [[34m2026-03-17T09:44:31.294+0000[0m] {[34mdagbag.py:[0m536} INFO[0m - Filling up the DagBag from /opt/***/dags/steamspy_top100_dag.py[0m
+[36mairflow-scheduler_1  |[0m [[34m2026-03-17T09:44:31.295+0000[0m] {[34mdagbag.py:[0m536} INFO[0m - Filling up the DagBag from /opt/***/dags/steamspy_top100_dag.py[0m
+[36mairflow-scheduler_1  |[0m Changing /opt/airflow/logs/dag_id=steamspy_top100_etl/run_id=manual__2026-03-17T09:44:30.263957+00:00/task_id=fetch_and_save_top100_games_to_local permission to 509
+[36mairflow-scheduler_1  |[0m Failed to change /opt/airflow/logs/dag_id=steamspy_top100_etl/run_id=manual__2026-03-17T09:44:30.263957+00:00/task_id=fetch_and_save_top100_games_to_local permission to 509: [Errno 1] Operation not permitted: '/opt/airflow/logs/dag_id=steamspy_top100_etl/run_id=manual__2026-03-17T09:44:30.263957+00:00/task_id=fetch_and_save_top100_games_to_local'
+[36mairflow-scheduler_1  |[0m [[34m2026-03-17T09:44:31.839+0000[0m] {[34mtask_command.py:[0m416} INFO[0m - Running <TaskInstance: steamspy_top100_etl.fetch_and_save_top100_games_to_local manual__2026-03-17T09:44:30.263957+00:00 [queued]> on host 17fd25a0dc68[0m
+[36mairflow-scheduler_1  |[0m Changing /opt/airflow/logs/dag_id=steamspy_top100_etl/run_id=scheduled__2026-03-16T00:00:00+00:00/task_id=fetch_and_save_top100_games_to_local permission to 509
+[36mairflow-scheduler_1  |[0m Failed to change /opt/airflow/logs/dag_id=steamspy_top100_etl/run_id=scheduled__2026-03-16T00:00:00+00:00/task_id=fetch_and_save_top100_games_to_local permission to 509: [Errno 1] Operation not permitted: '/opt/airflow/logs/dag_id=steamspy_top100_etl/run_id=scheduled__2026-03-16T00:00:00+00:00/task_id=fetch_and_save_top100_games_to_local'
+[36mairflow-scheduler_1  |[0m [[34m2026-03-17T09:44:31.843+0000[0m] {[34mtask_command.py:[0m416} INFO[0m - Running <TaskInstance: steamspy_top100_etl.fetch_and_save_top100_games_to_local scheduled__2026-03-16T00:00:00+00:00 [queued]> on host 17fd25a0dc68[0m
+[36mairflow-scheduler_1  |[0m --- Logging error ---
+[36mairflow-scheduler_1  |[0m Traceback (most recent call last):
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/utils/log/file_task_handler.py", line 484, in _init_file
+[36mairflow-scheduler_1  |[0m     os.chmod(full_path, new_file_permissions)
+[36mairflow-scheduler_1  |[0m PermissionError: [Errno 1] Operation not permitted: '/opt/airflow/logs/dag_id=steamspy_top100_etl/run_id=manual__2026-03-17T09:44:30.263957+00:00/task_id=fetch_and_save_top100_games_to_local/attempt=1.log'
+[36mairflow-scheduler_1  |[0m 
+[36mairflow-scheduler_1  |[0m During handling of the above exception, another exception occurred:
+[36mairflow-scheduler_1  |[0m 
+[36mairflow-scheduler_1  |[0m Traceback (most recent call last):
+[36mairflow-scheduler_1  |[0m   File "/usr/local/lib/python3.8/logging/__init__.py", line 1085, in emit
+[36mairflow-scheduler_1  |[0m     msg = self.format(record)
+[36mairflow-scheduler_1  |[0m   File "/usr/local/lib/python3.8/logging/__init__.py", line 929, in format
+[36mairflow-scheduler_1  |[0m     return fmt.format(record)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/utils/log/colored_log.py", line 101, in format
+[36mairflow-scheduler_1  |[0m     return super().format(record)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/colorlog/colorlog.py", line 135, in format
+[36mairflow-scheduler_1  |[0m     message = super(ColoredFormatter, self).format(record)
+[36mairflow-scheduler_1  |[0m   File "/usr/local/lib/python3.8/logging/__init__.py", line 668, in format
+[36mairflow-scheduler_1  |[0m     record.message = record.getMessage()
+[36mairflow-scheduler_1  |[0m   File "/usr/local/lib/python3.8/logging/__init__.py", line 373, in getMessage
+[36mairflow-scheduler_1  |[0m     msg = msg % self.args
+[36mairflow-scheduler_1  |[0m TypeError: not all arguments converted during string formatting
+[36mairflow-scheduler_1  |[0m Call stack:
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/bin/airflow", line 8, in <module>
+[36mairflow-scheduler_1  |[0m     sys.exit(main())
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/__main__.py", line 59, in main
+[36mairflow-scheduler_1  |[0m     args.func(args)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/cli/cli_config.py", line 49, in command
+[36mairflow-scheduler_1  |[0m     return func(*args, **kwargs)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/utils/cli.py", line 113, in wrapper
+[36mairflow-scheduler_1  |[0m     return f(*args, **kwargs)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/utils/providers_configuration_loader.py", line 55, in wrapped_function
+[36mairflow-scheduler_1  |[0m     return func(*args, **kwargs)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/cli/commands/scheduler_command.py", line 85, in scheduler
+[36mairflow-scheduler_1  |[0m     _run_scheduler_job(job_runner, skip_serve_logs=args.skip_serve_logs)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/cli/commands/scheduler_command.py", line 47, in _run_scheduler_job
+[36mairflow-scheduler_1  |[0m     run_job(job=job_runner.job, execute_callable=job_runner._execute)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/utils/session.py", line 77, in wrapper
+[36mairflow-scheduler_1  |[0m     return func(*args, session=session, **kwargs)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/jobs/job.py", line 289, in run_job
+[36mairflow-scheduler_1  |[0m     return execute_job(job, execute_callable=execute_callable)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/jobs/job.py", line 318, in execute_job
+[36mairflow-scheduler_1  |[0m     ret = execute_callable()
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/jobs/scheduler_job_runner.py", line 836, in _execute
+[36mairflow-scheduler_1  |[0m     self.job.executor.start()
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/executors/local_executor.py", line 370, in start
+[36mairflow-scheduler_1  |[0m     self.impl.start()
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/executors/local_executor.py", line 309, in start
+[36mairflow-scheduler_1  |[0m     worker.start()
+[36mairflow-scheduler_1  |[0m   File "/usr/local/lib/python3.8/multiprocessing/process.py", line 121, in start
+[36mairflow-scheduler_1  |[0m     self._popen = self._Popen(self)
+[36mairflow-scheduler_1  |[0m   File "/usr/local/lib/python3.8/multiprocessing/context.py", line 224, in _Popen
+[36mairflow-scheduler_1  |[0m     return _default_context.get_context().Process._Popen(process_obj)
+[36mairflow-scheduler_1  |[0m   File "/usr/local/lib/python3.8/multiprocessing/context.py", line 277, in _Popen
+[36mairflow-scheduler_1  |[0m     return Popen(process_obj)
+[36mairflow-scheduler_1  |[0m   File "/usr/local/lib/python3.8/multiprocessing/popen_fork.py", line 19, in __init__
+[36mairflow-scheduler_1  |[0m     self._launch(process_obj)
+[36mairflow-scheduler_1  |[0m   File "/usr/local/lib/python3.8/multiprocessing/popen_fork.py", line 75, in _launch
+[36mairflow-scheduler_1  |[0m     code = process_obj._bootstrap(parent_sentinel=child_r)
+[36mairflow-scheduler_1  |[0m   File "/usr/local/lib/python3.8/multiprocessing/process.py", line 315, in _bootstrap
+[36mairflow-scheduler_1  |[0m     self.run()
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/executors/local_executor.py", line 75, in run
+[36mairflow-scheduler_1  |[0m     return super().run()
+[36mairflow-scheduler_1  |[0m   File "/usr/local/lib/python3.8/multiprocessing/process.py", line 108, in run
+[36mairflow-scheduler_1  |[0m     self._target(*self._args, **self._kwargs)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/executors/local_executor.py", line 199, in do_work
+[36mairflow-scheduler_1  |[0m     self.execute_work(key=key, command=command)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/executors/local_executor.py", line 92, in execute_work
+[36mairflow-scheduler_1  |[0m     state = self._execute_work_in_fork(command)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/executors/local_executor.py", line 132, in _execute_work_in_fork
+[36mairflow-scheduler_1  |[0m     args.func(args)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/cli/cli_config.py", line 49, in command
+[36mairflow-scheduler_1  |[0m     return func(*args, **kwargs)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/utils/cli.py", line 113, in wrapper
+[36mairflow-scheduler_1  |[0m     return f(*args, **kwargs)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/cli/commands/task_command.py", line 412, in task_run
+[36mairflow-scheduler_1  |[0m     ti.init_run_context(raw=args.raw)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/models/taskinstance.py", line 2604, in init_run_context
+[36mairflow-scheduler_1  |[0m     self._set_context(self)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/utils/log/logging_mixin.py", line 90, in _set_context
+[36mairflow-scheduler_1  |[0m     set_context(self.log, context)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/utils/log/logging_mixin.py", line 237, in set_context
+[36mairflow-scheduler_1  |[0m     flag = cast(FileTaskHandler, handler).set_context(value)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/utils/log/file_task_handler.py", line 185, in set_context
+[36mairflow-scheduler_1  |[0m     local_loc = self._init_file(ti)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/utils/log/file_task_handler.py", line 486, in _init_file
+[36mairflow-scheduler_1  |[0m     logging.warning("OSError while changing ownership of the log file. ", e)
+[36mairflow-scheduler_1  |[0m Message: 'OSError while changing ownership of the log file. '
+[36mairflow-scheduler_1  |[0m Arguments: (PermissionError(1, 'Operation not permitted'),)
+[36mairflow-scheduler_1  |[0m --- Logging error ---
+[36mairflow-scheduler_1  |[0m Traceback (most recent call last):
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/utils/log/file_task_handler.py", line 484, in _init_file
+[36mairflow-scheduler_1  |[0m     os.chmod(full_path, new_file_permissions)
+[36mairflow-scheduler_1  |[0m PermissionError: [Errno 1] Operation not permitted: '/opt/airflow/logs/dag_id=steamspy_top100_etl/run_id=scheduled__2026-03-16T00:00:00+00:00/task_id=fetch_and_save_top100_games_to_local/attempt=1.log'
+[36mairflow-scheduler_1  |[0m 
+[36mairflow-scheduler_1  |[0m During handling of the above exception, another exception occurred:
+[36mairflow-scheduler_1  |[0m 
+[36mairflow-scheduler_1  |[0m Traceback (most recent call last):
+[36mairflow-scheduler_1  |[0m   File "/usr/local/lib/python3.8/logging/__init__.py", line 1085, in emit
+[36mairflow-scheduler_1  |[0m     msg = self.format(record)
+[36mairflow-scheduler_1  |[0m   File "/usr/local/lib/python3.8/logging/__init__.py", line 929, in format
+[36mairflow-scheduler_1  |[0m     return fmt.format(record)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/utils/log/colored_log.py", line 101, in format
+[36mairflow-scheduler_1  |[0m     return super().format(record)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/colorlog/colorlog.py", line 135, in format
+[36mairflow-scheduler_1  |[0m     message = super(ColoredFormatter, self).format(record)
+[36mairflow-scheduler_1  |[0m   File "/usr/local/lib/python3.8/logging/__init__.py", line 668, in format
+[36mairflow-scheduler_1  |[0m     record.message = record.getMessage()
+[36mairflow-scheduler_1  |[0m   File "/usr/local/lib/python3.8/logging/__init__.py", line 373, in getMessage
+[36mairflow-scheduler_1  |[0m     msg = msg % self.args
+[36mairflow-scheduler_1  |[0m TypeError: not all arguments converted during string formatting
+[36mairflow-scheduler_1  |[0m Call stack:
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/bin/airflow", line 8, in <module>
+[36mairflow-scheduler_1  |[0m     sys.exit(main())
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/__main__.py", line 59, in main
+[36mairflow-scheduler_1  |[0m     args.func(args)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/cli/cli_config.py", line 49, in command
+[36mairflow-scheduler_1  |[0m     return func(*args, **kwargs)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/utils/cli.py", line 113, in wrapper
+[36mairflow-scheduler_1  |[0m     return f(*args, **kwargs)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/utils/providers_configuration_loader.py", line 55, in wrapped_function
+[36mairflow-scheduler_1  |[0m     return func(*args, **kwargs)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/cli/commands/scheduler_command.py", line 85, in scheduler
+[36mairflow-scheduler_1  |[0m     _run_scheduler_job(job_runner, skip_serve_logs=args.skip_serve_logs)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/cli/commands/scheduler_command.py", line 47, in _run_scheduler_job
+[36mairflow-scheduler_1  |[0m     run_job(job=job_runner.job, execute_callable=job_runner._execute)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/utils/session.py", line 77, in wrapper
+[36mairflow-scheduler_1  |[0m     return func(*args, session=session, **kwargs)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/jobs/job.py", line 289, in run_job
+[36mairflow-scheduler_1  |[0m     return execute_job(job, execute_callable=execute_callable)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/jobs/job.py", line 318, in execute_job
+[36mairflow-scheduler_1  |[0m     ret = execute_callable()
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/jobs/scheduler_job_runner.py", line 836, in _execute
+[36mairflow-scheduler_1  |[0m     self.job.executor.start()
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/executors/local_executor.py", line 370, in start
+[36mairflow-scheduler_1  |[0m     self.impl.start()
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/executors/local_executor.py", line 309, in start
+[36mairflow-scheduler_1  |[0m     worker.start()
+[36mairflow-scheduler_1  |[0m   File "/usr/local/lib/python3.8/multiprocessing/process.py", line 121, in start
+[36mairflow-scheduler_1  |[0m     self._popen = self._Popen(self)
+[36mairflow-scheduler_1  |[0m   File "/usr/local/lib/python3.8/multiprocessing/context.py", line 224, in _Popen
+[36mairflow-scheduler_1  |[0m     return _default_context.get_context().Process._Popen(process_obj)
+[36mairflow-scheduler_1  |[0m   File "/usr/local/lib/python3.8/multiprocessing/context.py", line 277, in _Popen
+[36mairflow-scheduler_1  |[0m     return Popen(process_obj)
+[36mairflow-scheduler_1  |[0m   File "/usr/local/lib/python3.8/multiprocessing/popen_fork.py", line 19, in __init__
+[36mairflow-scheduler_1  |[0m     self._launch(process_obj)
+[36mairflow-scheduler_1  |[0m   File "/usr/local/lib/python3.8/multiprocessing/popen_fork.py", line 75, in _launch
+[36mairflow-scheduler_1  |[0m     code = process_obj._bootstrap(parent_sentinel=child_r)
+[36mairflow-scheduler_1  |[0m   File "/usr/local/lib/python3.8/multiprocessing/process.py", line 315, in _bootstrap
+[36mairflow-scheduler_1  |[0m     self.run()
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/executors/local_executor.py", line 75, in run
+[36mairflow-scheduler_1  |[0m     return super().run()
+[36mairflow-scheduler_1  |[0m   File "/usr/local/lib/python3.8/multiprocessing/process.py", line 108, in run
+[36mairflow-scheduler_1  |[0m     self._target(*self._args, **self._kwargs)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/executors/local_executor.py", line 199, in do_work
+[36mairflow-scheduler_1  |[0m     self.execute_work(key=key, command=command)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/executors/local_executor.py", line 92, in execute_work
+[36mairflow-scheduler_1  |[0m     state = self._execute_work_in_fork(command)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/executors/local_executor.py", line 132, in _execute_work_in_fork
+[36mairflow-scheduler_1  |[0m     args.func(args)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/cli/cli_config.py", line 49, in command
+[36mairflow-scheduler_1  |[0m     return func(*args, **kwargs)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/utils/cli.py", line 113, in wrapper
+[36mairflow-scheduler_1  |[0m     return f(*args, **kwargs)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/cli/commands/task_command.py", line 412, in task_run
+[36mairflow-scheduler_1  |[0m     ti.init_run_context(raw=args.raw)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/models/taskinstance.py", line 2604, in init_run_context
+[36mairflow-scheduler_1  |[0m     self._set_context(self)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/utils/log/logging_mixin.py", line 90, in _set_context
+[36mairflow-scheduler_1  |[0m     set_context(self.log, context)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/utils/log/logging_mixin.py", line 237, in set_context
+[36mairflow-scheduler_1  |[0m     flag = cast(FileTaskHandler, handler).set_context(value)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/utils/log/file_task_handler.py", line 185, in set_context
+[36mairflow-scheduler_1  |[0m     local_loc = self._init_file(ti)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/utils/log/file_task_handler.py", line 486, in _init_file
+[36mairflow-scheduler_1  |[0m     logging.warning("OSError while changing ownership of the log file. ", e)
+[36mairflow-scheduler_1  |[0m Message: 'OSError while changing ownership of the log file. '
+[36mairflow-scheduler_1  |[0m Arguments: (PermissionError(1, 'Operation not permitted'),)
+[36mairflow-scheduler_1  |[0m --- Logging error ---
+[36mairflow-scheduler_1  |[0m Traceback (most recent call last):
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/utils/log/file_task_handler.py", line 484, in _init_file
+[36mairflow-scheduler_1  |[0m     os.chmod(full_path, new_file_permissions)
+[36mairflow-scheduler_1  |[0m PermissionError: [Errno 1] Operation not permitted: '/opt/airflow/logs/dag_id=steamspy_top100_etl/run_id=manual__2026-03-17T09:44:30.263957+00:00/task_id=fetch_and_save_top100_games_to_local/attempt=1.log'
+[36mairflow-scheduler_1  |[0m 
+[36mairflow-scheduler_1  |[0m During handling of the above exception, another exception occurred:
+[36mairflow-scheduler_1  |[0m 
+[36mairflow-scheduler_1  |[0m Traceback (most recent call last):
+[36mairflow-scheduler_1  |[0m   File "/usr/local/lib/python3.8/logging/__init__.py", line 1085, in emit
+[36mairflow-scheduler_1  |[0m     msg = self.format(record)
+[36mairflow-scheduler_1  |[0m   File "/usr/local/lib/python3.8/logging/__init__.py", line 929, in format
+[36mairflow-scheduler_1  |[0m     return fmt.format(record)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/utils/log/colored_log.py", line 101, in format
+[36mairflow-scheduler_1  |[0m     return super().format(record)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/colorlog/colorlog.py", line 135, in format
+[36mairflow-scheduler_1  |[0m     message = super(ColoredFormatter, self).format(record)
+[36mairflow-scheduler_1  |[0m   File "/usr/local/lib/python3.8/logging/__init__.py", line 668, in format
+[36mairflow-scheduler_1  |[0m     record.message = record.getMessage()
+[36mairflow-scheduler_1  |[0m   File "/usr/local/lib/python3.8/logging/__init__.py", line 373, in getMessage
+[36mairflow-scheduler_1  |[0m     msg = msg % self.args
+[36mairflow-scheduler_1  |[0m TypeError: not all arguments converted during string formatting
+[36mairflow-scheduler_1  |[0m Call stack:
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/bin/airflow", line 8, in <module>
+[36mairflow-scheduler_1  |[0m     sys.exit(main())
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/__main__.py", line 59, in main
+[36mairflow-scheduler_1  |[0m     args.func(args)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/cli/cli_config.py", line 49, in command
+[36mairflow-scheduler_1  |[0m     return func(*args, **kwargs)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/utils/cli.py", line 113, in wrapper
+[36mairflow-scheduler_1  |[0m     return f(*args, **kwargs)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/utils/providers_configuration_loader.py", line 55, in wrapped_function
+[36mairflow-scheduler_1  |[0m     return func(*args, **kwargs)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/cli/commands/scheduler_command.py", line 85, in scheduler
+[36mairflow-scheduler_1  |[0m     _run_scheduler_job(job_runner, skip_serve_logs=args.skip_serve_logs)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/cli/commands/scheduler_command.py", line 47, in _run_scheduler_job
+[36mairflow-scheduler_1  |[0m     run_job(job=job_runner.job, execute_callable=job_runner._execute)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/utils/session.py", line 77, in wrapper
+[36mairflow-scheduler_1  |[0m     return func(*args, session=session, **kwargs)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/jobs/job.py", line 289, in run_job
+[36mairflow-scheduler_1  |[0m     return execute_job(job, execute_callable=execute_callable)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/jobs/job.py", line 318, in execute_job
+[36mairflow-scheduler_1  |[0m     ret = execute_callable()
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/jobs/scheduler_job_runner.py", line 836, in _execute
+[36mairflow-scheduler_1  |[0m     self.job.executor.start()
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/executors/local_executor.py", line 370, in start
+[36mairflow-scheduler_1  |[0m     self.impl.start()
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/executors/local_executor.py", line 309, in start
+[36mairflow-scheduler_1  |[0m     worker.start()
+[36mairflow-scheduler_1  |[0m   File "/usr/local/lib/python3.8/multiprocessing/process.py", line 121, in start
+[36mairflow-scheduler_1  |[0m     self._popen = self._Popen(self)
+[36mairflow-scheduler_1  |[0m   File "/usr/local/lib/python3.8/multiprocessing/context.py", line 224, in _Popen
+[36mairflow-scheduler_1  |[0m     return _default_context.get_context().Process._Popen(process_obj)
+[36mairflow-scheduler_1  |[0m   File "/usr/local/lib/python3.8/multiprocessing/context.py", line 277, in _Popen
+[36mairflow-scheduler_1  |[0m     return Popen(process_obj)
+[36mairflow-scheduler_1  |[0m   File "/usr/local/lib/python3.8/multiprocessing/popen_fork.py", line 19, in __init__
+[36mairflow-scheduler_1  |[0m     self._launch(process_obj)
+[36mairflow-scheduler_1  |[0m   File "/usr/local/lib/python3.8/multiprocessing/popen_fork.py", line 75, in _launch
+[36mairflow-scheduler_1  |[0m     code = process_obj._bootstrap(parent_sentinel=child_r)
+[36mairflow-scheduler_1  |[0m   File "/usr/local/lib/python3.8/multiprocessing/process.py", line 315, in _bootstrap
+[36mairflow-scheduler_1  |[0m     self.run()
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/executors/local_executor.py", line 75, in run
+[36mairflow-scheduler_1  |[0m     return super().run()
+[36mairflow-scheduler_1  |[0m   File "/usr/local/lib/python3.8/multiprocessing/process.py", line 108, in run
+[36mairflow-scheduler_1  |[0m     self._target(*self._args, **self._kwargs)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/executors/local_executor.py", line 199, in do_work
+[36mairflow-scheduler_1  |[0m     self.execute_work(key=key, command=command)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/executors/local_executor.py", line 92, in execute_work
+[36mairflow-scheduler_1  |[0m     state = self._execute_work_in_fork(command)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/executors/local_executor.py", line 132, in _execute_work_in_fork
+[36mairflow-scheduler_1  |[0m     args.func(args)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/cli/cli_config.py", line 49, in command
+[36mairflow-scheduler_1  |[0m     return func(*args, **kwargs)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/utils/cli.py", line 113, in wrapper
+[36mairflow-scheduler_1  |[0m     return f(*args, **kwargs)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/cli/commands/task_command.py", line 412, in task_run
+[36mairflow-scheduler_1  |[0m     ti.init_run_context(raw=args.raw)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/models/taskinstance.py", line 2604, in init_run_context
+[36mairflow-scheduler_1  |[0m     self._set_context(self)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/utils/log/logging_mixin.py", line 90, in _set_context
+[36mairflow-scheduler_1  |[0m     set_context(self.log, context)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/utils/log/logging_mixin.py", line 237, in set_context
+[36mairflow-scheduler_1  |[0m     flag = cast(FileTaskHandler, handler).set_context(value)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/utils/log/file_task_handler.py", line 185, in set_context
+[36mairflow-scheduler_1  |[0m     local_loc = self._init_file(ti)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/utils/log/file_task_handler.py", line 486, in _init_file
+[36mairflow-scheduler_1  |[0m     logging.warning("OSError while changing ownership of the log file. ", e)
+[36mairflow-scheduler_1  |[0m Message: 'OSError while changing ownership of the log file. '
+[36mairflow-scheduler_1  |[0m Arguments: (PermissionError(1, 'Operation not permitted'),)
+[36mairflow-scheduler_1  |[0m --- Logging error ---
+[36mairflow-scheduler_1  |[0m Traceback (most recent call last):
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/utils/log/file_task_handler.py", line 484, in _init_file
+[36mairflow-scheduler_1  |[0m     os.chmod(full_path, new_file_permissions)
+[36mairflow-scheduler_1  |[0m PermissionError: [Errno 1] Operation not permitted: '/opt/airflow/logs/dag_id=steamspy_top100_etl/run_id=scheduled__2026-03-16T00:00:00+00:00/task_id=fetch_and_save_top100_games_to_local/attempt=1.log'
+[36mairflow-scheduler_1  |[0m 
+[36mairflow-scheduler_1  |[0m During handling of the above exception, another exception occurred:
+[36mairflow-scheduler_1  |[0m 
+[36mairflow-scheduler_1  |[0m Traceback (most recent call last):
+[36mairflow-scheduler_1  |[0m   File "/usr/local/lib/python3.8/logging/__init__.py", line 1085, in emit
+[36mairflow-scheduler_1  |[0m     msg = self.format(record)
+[36mairflow-scheduler_1  |[0m   File "/usr/local/lib/python3.8/logging/__init__.py", line 929, in format
+[36mairflow-scheduler_1  |[0m     return fmt.format(record)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/utils/log/colored_log.py", line 101, in format
+[36mairflow-scheduler_1  |[0m     return super().format(record)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/colorlog/colorlog.py", line 135, in format
+[36mairflow-scheduler_1  |[0m     message = super(ColoredFormatter, self).format(record)
+[36mairflow-scheduler_1  |[0m   File "/usr/local/lib/python3.8/logging/__init__.py", line 668, in format
+[36mairflow-scheduler_1  |[0m     record.message = record.getMessage()
+[36mairflow-scheduler_1  |[0m   File "/usr/local/lib/python3.8/logging/__init__.py", line 373, in getMessage
+[36mairflow-scheduler_1  |[0m     msg = msg % self.args
+[36mairflow-scheduler_1  |[0m TypeError: not all arguments converted during string formatting
+[36mairflow-scheduler_1  |[0m Call stack:
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/bin/airflow", line 8, in <module>
+[36mairflow-scheduler_1  |[0m     sys.exit(main())
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/__main__.py", line 59, in main
+[36mairflow-scheduler_1  |[0m     args.func(args)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/cli/cli_config.py", line 49, in command
+[36mairflow-scheduler_1  |[0m     return func(*args, **kwargs)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/utils/cli.py", line 113, in wrapper
+[36mairflow-scheduler_1  |[0m     return f(*args, **kwargs)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/utils/providers_configuration_loader.py", line 55, in wrapped_function
+[36mairflow-scheduler_1  |[0m     return func(*args, **kwargs)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/cli/commands/scheduler_command.py", line 85, in scheduler
+[36mairflow-scheduler_1  |[0m     _run_scheduler_job(job_runner, skip_serve_logs=args.skip_serve_logs)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/cli/commands/scheduler_command.py", line 47, in _run_scheduler_job
+[36mairflow-scheduler_1  |[0m     run_job(job=job_runner.job, execute_callable=job_runner._execute)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/utils/session.py", line 77, in wrapper
+[36mairflow-scheduler_1  |[0m     return func(*args, session=session, **kwargs)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/jobs/job.py", line 289, in run_job
+[36mairflow-scheduler_1  |[0m     return execute_job(job, execute_callable=execute_callable)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/jobs/job.py", line 318, in execute_job
+[36mairflow-scheduler_1  |[0m     ret = execute_callable()
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/jobs/scheduler_job_runner.py", line 836, in _execute
+[36mairflow-scheduler_1  |[0m     self.job.executor.start()
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/executors/local_executor.py", line 370, in start
+[36mairflow-scheduler_1  |[0m     self.impl.start()
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/executors/local_executor.py", line 309, in start
+[36mairflow-scheduler_1  |[0m     worker.start()
+[36mairflow-scheduler_1  |[0m   File "/usr/local/lib/python3.8/multiprocessing/process.py", line 121, in start
+[36mairflow-scheduler_1  |[0m     self._popen = self._Popen(self)
+[36mairflow-scheduler_1  |[0m   File "/usr/local/lib/python3.8/multiprocessing/context.py", line 224, in _Popen
+[36mairflow-scheduler_1  |[0m     return _default_context.get_context().Process._Popen(process_obj)
+[36mairflow-scheduler_1  |[0m   File "/usr/local/lib/python3.8/multiprocessing/context.py", line 277, in _Popen
+[36mairflow-scheduler_1  |[0m     return Popen(process_obj)
+[36mairflow-scheduler_1  |[0m   File "/usr/local/lib/python3.8/multiprocessing/popen_fork.py", line 19, in __init__
+[36mairflow-scheduler_1  |[0m     self._launch(process_obj)
+[36mairflow-scheduler_1  |[0m   File "/usr/local/lib/python3.8/multiprocessing/popen_fork.py", line 75, in _launch
+[36mairflow-scheduler_1  |[0m     code = process_obj._bootstrap(parent_sentinel=child_r)
+[36mairflow-scheduler_1  |[0m   File "/usr/local/lib/python3.8/multiprocessing/process.py", line 315, in _bootstrap
+[36mairflow-scheduler_1  |[0m     self.run()
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/executors/local_executor.py", line 75, in run
+[36mairflow-scheduler_1  |[0m     return super().run()
+[36mairflow-scheduler_1  |[0m   File "/usr/local/lib/python3.8/multiprocessing/process.py", line 108, in run
+[36mairflow-scheduler_1  |[0m     self._target(*self._args, **self._kwargs)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/executors/local_executor.py", line 199, in do_work
+[36mairflow-scheduler_1  |[0m     self.execute_work(key=key, command=command)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/executors/local_executor.py", line 92, in execute_work
+[36mairflow-scheduler_1  |[0m     state = self._execute_work_in_fork(command)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/executors/local_executor.py", line 132, in _execute_work_in_fork
+[36mairflow-scheduler_1  |[0m     args.func(args)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/cli/cli_config.py", line 49, in command
+[36mairflow-scheduler_1  |[0m     return func(*args, **kwargs)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/utils/cli.py", line 113, in wrapper
+[36mairflow-scheduler_1  |[0m     return f(*args, **kwargs)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/cli/commands/task_command.py", line 412, in task_run
+[36mairflow-scheduler_1  |[0m     ti.init_run_context(raw=args.raw)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/models/taskinstance.py", line 2604, in init_run_context
+[36mairflow-scheduler_1  |[0m     self._set_context(self)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/utils/log/logging_mixin.py", line 90, in _set_context
+[36mairflow-scheduler_1  |[0m     set_context(self.log, context)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/utils/log/logging_mixin.py", line 237, in set_context
+[36mairflow-scheduler_1  |[0m     flag = cast(FileTaskHandler, handler).set_context(value)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/utils/log/file_task_handler.py", line 185, in set_context
+[36mairflow-scheduler_1  |[0m     local_loc = self._init_file(ti)
+[36mairflow-scheduler_1  |[0m   File "/home/airflow/.local/lib/python3.8/site-packages/airflow/utils/log/file_task_handler.py", line 486, in _init_file
+[36mairflow-scheduler_1  |[0m     logging.warning("OSError while changing ownership of the log file. ", e)
+[36mairflow-scheduler_1  |[0m Message: 'OSError while changing ownership of the log file. '
+[36mairflow-scheduler_1  |[0m Arguments: (PermissionError(1, 'Operation not permitted'),)
+[36mairflow-scheduler_1  |[0m [[34m2026-03-17T09:44:32.335+0000[0m] {[34mscheduler_job_runner.py:[0m686} INFO[0m - Received executor event with state success for task instance TaskInstanceKey(dag_id='steamspy_top100_etl', task_id='fetch_and_save_top100_games_to_local', run_id='manual__2026-03-17T09:44:30.263957+00:00', try_number=1, map_index=-1)[0m
+[36mairflow-scheduler_1  |[0m [[34m2026-03-17T09:44:32.335+0000[0m] {[34mscheduler_job_runner.py:[0m686} INFO[0m - Received executor event with state success for task instance TaskInstanceKey(dag_id='steamspy_top100_etl', task_id='fetch_and_save_top100_games_to_local', run_id='scheduled__2026-03-16T00:00:00+00:00', try_number=1, map_index=-1)[0m
+[36mairflow-scheduler_1  |[0m [[34m2026-03-17T09:44:32.339+0000[0m] {[34mscheduler_job_runner.py:[0m723} INFO[0m - TaskInstance Finished: dag_id=steamspy_top100_etl, task_id=fetch_and_save_top100_games_to_local, run_id=manual__2026-03-17T09:44:30.263957+00:00, map_index=-1, run_start_date=2026-03-17 09:44:31.898393+00:00, run_end_date=2026-03-17 09:44:32.097593+00:00, run_duration=0.1992, state=up_for_retry, executor_state=success, try_number=1, max_tries=1, job_id=2, pool=default_pool, queue=default, priority_weight=2, operator=PythonOperator, queued_dttm=2026-03-17 09:44:31.251859+00:00, queued_by_job_id=1, pid=181[0m
+[36mairflow-scheduler_1  |[0m [[34m2026-03-17T09:44:32.339+0000[0m] {[34mscheduler_job_runner.py:[0m723} INFO[0m - TaskInstance Finished: dag_id=steamspy_top100_etl, task_id=fetch_and_save_top100_games_to_local, run_id=scheduled__2026-03-16T00:00:00+00:00, map_index=-1, run_start_date=2026-03-17 09:44:31.898434+00:00, run_end_date=2026-03-17 09:44:32.101886+00:00, run_duration=0.203452, state=up_for_retry, executor_state=success, try_number=1, max_tries=1, job_id=3, pool=default_pool, queue=default, priority_weight=2, operator=PythonOperator, queued_dttm=2026-03-17 09:44:31.251859+00:00, queued_by_job_id=1, pid=182[0m

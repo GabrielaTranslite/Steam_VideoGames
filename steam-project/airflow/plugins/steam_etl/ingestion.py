@@ -1,7 +1,7 @@
 ﻿"""Bronze-layer ingestion callables for the Steam ETL DAG.
 
 This module contains API download logic only:
-- SteamSpy top100 extraction
+- SteamSpy app extraction
 - Steam Store enrichment for the downloaded app list
 """
 
@@ -18,15 +18,19 @@ from steam_etl.io_utils import DATA_FOLDER
 
 logger = logging.getLogger(__name__)
 
-STEAMSPY_API_URL = "https://steamspy.com/api.php?request=top100in2weeks"
-STEAMSPY_TOP_N = 100
+STEAMSPY_API_URL = "https://steamspy.com/api.php"
+STEAMSPY_REQUEST = "all"
+STEAMSPY_START_PAGE = 0
+STEAMSPY_MAX_PAGES = 10
+STEAMSPY_TIMEOUT_SECONDS = 30
+STEAMSPY_TOP_N = 500
 STEAM_STORE_BASE = "https://store.steampowered.com/api"
 STEAM_STORE_TIMEOUT_SECONDS = 15
 STEAM_STORE_MAX_RETRIES = 5
 STEAM_STORE_INTER_REQUEST_SLEEP_SECONDS = 2.0
 STEAM_STORE_RETRY_BASE_SLEEP_SECONDS = 2.0
 STEAM_STORE_RETRY_MAX_SLEEP_SECONDS = 600.0
-STEAM_STORE_BATCH_SIZE = 1
+STEAM_STORE_BATCH_SIZE = 5
 STEAM_STORE_COLUMNS = [
     "appid",
     "price_usd",
@@ -37,8 +41,8 @@ STEAM_STORE_COLUMNS = [
 ]
 
 
-def fetch_and_save_top100_games(**context):
-    """Download SteamSpy top 100 appids and store as local bronze CSV."""
+def fetch_and_save_top500_games(**context):
+    """Download SteamSpy appids and store the top N locally as bronze CSV."""
     ds = context.get("ds")
 
     headers = {
@@ -49,39 +53,71 @@ def fetch_and_save_top100_games(**context):
         )
     }
 
-    req = requests.get(STEAMSPY_API_URL, headers=headers)
-    if req.status_code != 200:
-        raise Exception(f"Failed to get top 100 games from Steam Spy: HTTP {req.status_code}")
-
-    data = req.json()
-
     games_list = []
-    for app_id, game_details in data.items():
-        if "appid" not in game_details:
-            game_details["appid"] = app_id
-        games_list.append(game_details)
+    seen_appids = set()
+
+    for page in range(STEAMSPY_START_PAGE, STEAMSPY_START_PAGE + STEAMSPY_MAX_PAGES):
+        params = {"request": STEAMSPY_REQUEST, "page": page}
+        req = requests.get(
+            STEAMSPY_API_URL,
+            headers=headers,
+            params=params,
+            timeout=STEAMSPY_TIMEOUT_SECONDS,
+        )
+        if req.status_code != 200:
+            raise Exception(f"Failed to get Steam Spy games: HTTP {req.status_code} page={page}")
+
+        data = req.json()
+        if not isinstance(data, dict) or not data:
+            break
+
+        for app_id, game_details in data.items():
+            if not isinstance(game_details, dict):
+                continue
+
+            normalized_appid = game_details.get("appid", app_id)
+            try:
+                normalized_appid = int(normalized_appid)
+            except (TypeError, ValueError):
+                continue
+
+            if normalized_appid in seen_appids:
+                continue
+
+            game_details["appid"] = normalized_appid
+            games_list.append(game_details)
+            seen_appids.add(normalized_appid)
+
+            if len(games_list) >= STEAMSPY_TOP_N:
+                break
+
+        if len(games_list) >= STEAMSPY_TOP_N:
+            break
+
+    if len(games_list) < STEAMSPY_TOP_N:
+        logger.warning("SteamSpy returned fewer appids than requested: requested=%s got=%s", STEAMSPY_TOP_N, len(games_list))
 
     games_list = games_list[:STEAMSPY_TOP_N]
 
     df = pd.DataFrame(games_list)
     os.makedirs(DATA_FOLDER, exist_ok=True)
 
-    file_name = f"steamspy_top100_games_{ds}.csv"
+    file_name = f"steamspy_top500_games_{ds}.csv"
     file_path = os.path.join(DATA_FOLDER, file_name)
     df.to_csv(file_path, index=False)
 
     if not os.path.exists(file_path):
         raise FileNotFoundError(f"Expected output not found: {file_path}")
 
-    context["ti"].xcom_push(key="top100_games", value=games_list)
+    context["ti"].xcom_push(key="top500_games", value=games_list)
     return file_name
 
 
 def fetch_steam_store_details(**context):
-    """Enrich top100 app ids with selected Steam Store metadata and save bronze CSV."""
+    """Enrich top500 app ids with selected Steam Store metadata and save bronze CSV."""
     ds = context.get("ds") or datetime.now().strftime("%Y-%m-%d")
     ti = context.get("ti")
-    games_details = ti.xcom_pull(task_ids="fetch_and_save_top100_games_to_local", key="top100_games") or []
+    games_details = ti.xcom_pull(task_ids="fetch_and_save_top500_games_to_local", key="top500_games") or []
 
     file_name = f"steam_store_details_{ds}.csv"
     file_path = os.path.join(DATA_FOLDER, file_name)

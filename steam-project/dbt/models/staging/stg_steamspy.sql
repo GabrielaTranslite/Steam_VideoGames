@@ -11,6 +11,10 @@ ranked as (
         cast(negative as int64) as negative_reviews,
         cast(ccu as int64) as ccu,
         owners_category,
+        cast(average_forever as float64) as average_forever,
+        cast(average_2weeks as float64) as average_2weeks,
+        cast(median_forever as float64) as median_forever,
+        cast(median_2weeks as float64) as median_2weeks,
         safe_cast(ingestion_date as date) as ingestion_date,
         row_number() over (
             partition by cast(appid as int64)
@@ -27,6 +31,10 @@ select
     negative_reviews,
     ccu,
     owners_category,
+    average_forever,
+    average_2weeks,
+    median_forever,
+    median_2weeks,
     ingestion_date
 from ranked
 where rn = 1

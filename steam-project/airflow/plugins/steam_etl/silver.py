@@ -24,6 +24,11 @@ from steam_etl.io_utils import (
 
 logger = logging.getLogger(__name__)
 
+# Mapping of Steam's internal language codes to readable names
+STEAM_LANG_CODE_MAP = {
+    "#lang_slovakian": "Slovakian",
+}
+
 
 def transform_steam_api_to_silver(**context):
     """Transform Steam API bronze CSV to silver parquet."""
@@ -67,6 +72,11 @@ def transform_steam_api_to_silver(**context):
             .str.replace(",", ".", regex=False)           # convert decimal comma → dot
         )
         df["price_pln"] = pd.to_numeric(df["price_pln"], errors="coerce").fillna(0)
+
+    # Sanitize language codes: replace Steam's internal #lang_* codes with readable names
+    if "languages" in df.columns:
+        for code, name in STEAM_LANG_CODE_MAP.items():
+            df["languages"] = df["languages"].astype(str).str.replace(code, name, regex=False)
 
     df = df.drop_duplicates(subset=["appid"], keep="first")
     df["appid"] = df["appid"].astype("int64")

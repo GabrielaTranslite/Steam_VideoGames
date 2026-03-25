@@ -17,7 +17,11 @@ select
             / (coalesce(spy.positive_reviews, 0) + coalesce(spy.negative_reviews, 0)),
             4
         )
-    end as positive_ratio
+    end as positive_ratio,
+    coalesce(spy.average_forever, 0) as average_forever,
+    coalesce(spy.average_2weeks, 0) as average_2weeks,
+    coalesce(spy.median_forever, 0) as median_forever,
+    coalesce(spy.median_2weeks, 0) as median_2weeks
 from {{ ref('stg_steam_api') }} api
 left join {{ ref('stg_steamspy') }} spy
     on api.appid = spy.appid

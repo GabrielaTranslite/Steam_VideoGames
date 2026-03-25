@@ -2,6 +2,7 @@
   config(
     materialized='incremental',
     incremental_strategy='merge',
+        on_schema_change='sync_all_columns',
     unique_key=['appid', 'snapshot_date'],
     partition_by={"field": "snapshot_date", "data_type": "date"},
     cluster_by=['appid']
@@ -85,6 +86,10 @@ spy_source as (
         cast(negative as int64) as negative_reviews,
         cast(ccu as int64) as ccu,
         owners_category,
+        cast(average_forever as float64) as average_forever,
+        cast(average_2weeks as float64) as average_2weeks,
+        cast(median_forever as float64) as median_forever,
+        cast(median_2weeks as float64) as median_2weeks,
         coalesce(
             safe_cast(ingestion_date as date),
             safe_cast(regexp_extract(_file_name, r'([0-9]{4}-[0-9]{2}-[0-9]{2})') as date)
@@ -108,6 +113,10 @@ spy_daily as (
         negative_reviews,
         ccu,
         owners_category,
+        average_forever,
+        average_2weeks,
+        median_forever,
+        median_2weeks,
         snapshot_date
     from spy_source
     where rn = 1
@@ -138,7 +147,11 @@ joined as (
                 / (coalesce(spy.positive_reviews, 0) + coalesce(spy.negative_reviews, 0)),
                 4
             )
-        end as positive_ratio
+        end as positive_ratio,
+        coalesce(spy.average_forever, 0) as average_forever,
+        coalesce(spy.average_2weeks, 0) as average_2weeks,
+        coalesce(spy.median_forever, 0) as median_forever,
+        coalesce(spy.median_2weeks, 0) as median_2weeks
     from api_daily api
         left join api_primary_genre apg
             on api.appid = apg.appid

@@ -40,6 +40,22 @@ STEAM_STORE_COLUMNS = [
     "genre",
 ]
 
+    # Mapping of Steam's internal language codes to readable names
+    STEAM_LANG_CODE_MAP = {
+        "#lang_slovakian": "Slovakian",
+    }
+
+
+    def sanitize_languages(languages_str):
+        """Convert Steam's internal #lang_* codes to readable language names."""
+        if not languages_str:
+            return languages_str
+    
+        result = languages_str
+        for code, name in STEAM_LANG_CODE_MAP.items():
+            result = result.replace(code, name)
+        return result
+
 
 def fetch_and_save_top500_games(**context):
     """Download SteamSpy appids and store the top N locally as bronze CSV."""
@@ -275,7 +291,7 @@ def fetch_steam_store_details(**context):
                     "price_usd": price_usd,
                     "price_pln": price_pln,
                     "release_date": release_date,
-                    "languages": languages,
+                    "languages": sanitize_languages(languages),
                     "genre": genre,
                 }
             )

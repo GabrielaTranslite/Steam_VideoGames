@@ -95,7 +95,7 @@ def transform_steamspy_to_silver(**context):
     ds = context.get("ds") or datetime.now().strftime("%Y-%m-%d")
     task_logger = logger.getChild("transform_steamspy_to_silver")
 
-    file_path = os.path.join(DATA_FOLDER, f"steamspy_top500_games_{ds}.csv")
+    file_path = os.path.join(DATA_FOLDER, f"steamspy_top1000_games_{ds}.csv")
     df = safe_read_csv(file_path, "steamspy_bronze")
 
     cols_to_drop = ["developer", "publisher", "score_rank", "userscore", "price", "initialprice", "discount"]

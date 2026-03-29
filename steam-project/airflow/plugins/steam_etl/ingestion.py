@@ -21,9 +21,12 @@ logger = logging.getLogger(__name__)
 STEAMSPY_API_URL = "https://steamspy.com/api.php"
 STEAMSPY_REQUEST = "all"
 STEAMSPY_START_PAGE = 0
-STEAMSPY_MAX_PAGES = 10
+STEAMSPY_MAX_PAGES = 20
 STEAMSPY_TIMEOUT_SECONDS = 30
-STEAMSPY_TOP_N = 500
+STEAMSPY_TOP_N = 1000
+STEAMSPY_BRONZE_FILE_PREFIX = f"steamspy_top{STEAMSPY_TOP_N}_games"
+STEAMSPY_XCOM_KEY = f"top{STEAMSPY_TOP_N}_games"
+STEAMSPY_FETCH_TASK_ID = f"fetch_and_save_top{STEAMSPY_TOP_N}_games_to_local"
 STEAM_STORE_BASE = "https://store.steampowered.com/api"
 STEAM_STORE_TIMEOUT_SECONDS = 15
 STEAM_STORE_MAX_RETRIES = 5
@@ -40,24 +43,24 @@ STEAM_STORE_COLUMNS = [
     "genre",
 ]
 
-    # Mapping of Steam's internal language codes to readable names
-    STEAM_LANG_CODE_MAP = {
-        "#lang_slovakian": "Slovakian",
-    }
+# Mapping of Steam's internal language codes to readable names
+STEAM_LANG_CODE_MAP = {
+    "#lang_slovakian": "Slovakian",
+}
 
 
-    def sanitize_languages(languages_str):
-        """Convert Steam's internal #lang_* codes to readable language names."""
-        if not languages_str:
-            return languages_str
-    
-        result = languages_str
-        for code, name in STEAM_LANG_CODE_MAP.items():
-            result = result.replace(code, name)
-        return result
+def sanitize_languages(languages_str):
+    """Convert Steam's internal #lang_* codes to readable language names."""
+    if not languages_str:
+        return languages_str
+
+    result = languages_str
+    for code, name in STEAM_LANG_CODE_MAP.items():
+        result = result.replace(code, name)
+    return result
 
 
-def fetch_and_save_top500_games(**context):
+def fetch_and_save_top1000_games(**context):
     """Download SteamSpy appids and store the top N locally as bronze CSV."""
     ds = context.get("ds")
 
@@ -118,22 +121,22 @@ def fetch_and_save_top500_games(**context):
     df = pd.DataFrame(games_list)
     os.makedirs(DATA_FOLDER, exist_ok=True)
 
-    file_name = f"steamspy_top500_games_{ds}.csv"
+    file_name = f"{STEAMSPY_BRONZE_FILE_PREFIX}_{ds}.csv"
     file_path = os.path.join(DATA_FOLDER, file_name)
     df.to_csv(file_path, index=False)
 
     if not os.path.exists(file_path):
         raise FileNotFoundError(f"Expected output not found: {file_path}")
 
-    context["ti"].xcom_push(key="top500_games", value=games_list)
+    context["ti"].xcom_push(key=STEAMSPY_XCOM_KEY, value=games_list)
     return file_name
 
 
 def fetch_steam_store_details(**context):
-    """Enrich top500 app ids with selected Steam Store metadata and save bronze CSV."""
+    """Enrich top1000 app ids with selected Steam Store metadata and save bronze CSV."""
     ds = context.get("ds") or datetime.now().strftime("%Y-%m-%d")
     ti = context.get("ti")
-    games_details = ti.xcom_pull(task_ids="fetch_and_save_top500_games_to_local", key="top500_games") or []
+    games_details = ti.xcom_pull(task_ids=STEAMSPY_FETCH_TASK_ID, key=STEAMSPY_XCOM_KEY) or []
 
     file_name = f"steam_store_details_{ds}.csv"
     file_path = os.path.join(DATA_FOLDER, file_name)

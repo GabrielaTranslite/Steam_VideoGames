@@ -97,13 +97,13 @@ def transform_steamspy_to_silver(**context):
 
     file_path = os.path.join(DATA_FOLDER, f"steamspy_top1000_games_{ds}.csv")
     df = safe_read_csv(file_path, "steamspy_bronze")
-
+    # Drop columns that are not needed for analysis or have too many missing values
     cols_to_drop = ["developer", "publisher", "score_rank", "userscore", "price", "initialprice", "discount"]
     df = df.drop(columns=[c for c in cols_to_drop if c in df.columns])
 
     if "ccu" in df.columns:
         df = df.sort_values(by="ccu", ascending=False).reset_index(drop=True)
-
+    # Map owners ranges to categorical labels
     owners_mapping = {
         "5,000,000 .. 10,000,000": "5M-10M",
         "10,000,000 .. 20,000,000": "10M-20M",
@@ -159,11 +159,11 @@ def transform_to_normalized_tables(**context):
         file_path = parquet_files[0]
 
     df = pd.read_parquet(file_path)
-
+    # Create normalized games table by dropping genre and languages, which will be in separate tables
     games = df.drop(columns=["genre", "languages"], errors="ignore").copy()
     safe_write_parquet(games, os.path.join(silver_folder, f"games_{ds}.parquet"), "games_normalized")
     save_last_processed_date("games_normalized", ds)
-
+    # The genre column contains comma-separated values — we need to split and normalize them into a separate table
     if "genre" in df.columns:
         genres = df[["appid", "genre"]].copy()
         genres["genre"] = genres["genre"].str.split(",")
@@ -172,7 +172,7 @@ def transform_to_normalized_tables(**context):
         genres = genres[genres["genre"] != "Free To Play"].reset_index(drop=True)
         safe_write_parquet(genres, os.path.join(silver_folder, f"genres_{ds}.parquet"), "genres_normalized")
         save_last_processed_date("genres_normalized", ds)
-
+    # The languages column contains comma-separated values with potential HTML tags and asterisks indicating audio support. We need to clean and normalize this data.
     if "languages" in df.columns:
         languages = df[["appid", "languages"]].copy()
         languages["language_raw"] = languages["languages"].fillna("").astype(str).str.split(",")

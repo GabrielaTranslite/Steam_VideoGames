@@ -1,7 +1,7 @@
 # Bronze → Silver Layer Implementation: Error Handling & Incremental Loading
 
 ## Overview
-Updated the Airflow DAG (`steamspy_top100_dag.py`) with comprehensive error handling, incremental loading capability, and Parquet format output for the bronze → silver layer transformations.
+Updated the Airflow DAG (`steamspy_top1000_dag.py`) with comprehensive error handling, incremental loading capability, and Parquet format output for the bronze → silver layer transformations.
 
 **Date:** 2026-03-21
 
@@ -214,23 +214,23 @@ python -c "import pyarrow; print(pyarrow.__version__)"
 ### A. Test Incremental Loading
 ```python
 # First run: processes 2026-03-21
-airflow dags test steamspy_top100_etl 2026-03-21
+airflow dags test steamspy_top1000_etl 2026-03-21
 
 # Check metadata created
 cat /opt/airflow/data/silver_metadata.txt
 
 # Second run: should skip (already processed)
-airflow dags test steamspy_top100_etl 2026-03-21
+airflow dags test steamspy_top1000_etl 2026-03-21
 
 # Different date: should process
-airflow dags test steamspy_top100_etl 2026-03-22
+airflow dags test steamspy_top1000_etl 2026-03-22
 ```
 
 ### B. Test Error Handling
 ```python
 # Test file not found error
 rm /opt/airflow/data/steam_store_details_2026-03-21.csv
-airflow dags test steamspy_top100_etl 2026-03-21
+airflow dags test steamspy_top1000_etl 2026-03-21
 # Should raise AirflowException with clear message
 ```
 
@@ -332,7 +332,7 @@ dbt/models/marts/
 ## Appendix: File Manifest
 
 **Modified Files:**
-- `steam-project/airflow/dags/steamspy_top100_dag.py` (major update)
+- `steam-project/airflow/dags/steamspy_top1000_dag.py` (major update)
 
 **New Metadata File (created at runtime):**
 - `data/silver_metadata.txt`

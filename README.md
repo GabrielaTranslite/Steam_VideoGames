@@ -14,7 +14,7 @@ Main questions this project helps answer:
 
 - Which languages are most common in popular Steam games?
 - Which genres show the strongest localization activity?
-- How do popularity signals (owners, players, engagement) relate to language coverage?
+- How do popularity signals (concurrent players, positive ratio, total number of reviews) relate to language coverage?
 - Which game segments may represent opportunities for localization services?
 
 ## 2. Project Scope
@@ -25,7 +25,9 @@ This is a batch pipeline (daily schedule) with the following layers:
 - Silver: cleaned and standardized datasets (Parquet)
 - Gold: analytics tables in BigQuery (dbt models)
 
-The project currently ingests top 1000 games from SteamSpy for each run date.
+The project currently ingests top 1000 appids (top most own titles) from SteamSpy for each run date.
+
+![Steam Video Games Localization Batch Pipeline](./images/Steam%20Video%20Games%20Localization%20Batch%20Pipeline.jpg)
 
 ## 3. Tech Stack
 
@@ -48,10 +50,95 @@ The project currently ingests top 1000 games from SteamSpy for each run date.
 6. dbt prepares external tables in BigQuery and builds Gold marts.
 7. Gold tables are ready for BI tools (Tableau section below).
 
+## 4.1 Airflow Orchestration Details (Beginner Friendly)
+
+If you used Kestra in Zoomcamp, you can think about Airflow this way:
+
+- Kestra Flow ~= Airflow DAG
+- Kestra task ~= Airflow Operator task
+- Schedule/triggers work in a similar idea: a workflow runs on a defined time plan
+
+### What Airflow does in this project
+
+Airflow is the workflow engine that decides:
+
+- what should run,
+- in which order,
+- with retries if a task fails,
+- and when the daily pipeline should start.
+
+In this project, Airflow runs one main DAG called `steamspy_top1000_etl`.
+
+### Airflow file structure in this repository
+
+Main folders and files related to orchestration:
+
+- `steam-project/docker-compose.yml`: starts Airflow services (`airflow-webserver`, `airflow-scheduler`) and Postgres metadata DB
+- `steam-project/airflow/dags/steamspy_top1000_dag.py`: the DAG definition and task dependencies
+- `steam-project/airflow/plugins/steam_etl/ingestion.py`: Python functions for API ingestion
+- `steam-project/airflow/plugins/steam_etl/silver.py`: Python functions for silver and normalized transformations
+- `steam-project/airflow/plugins/steam_etl/io_utils.py`: shared upload helper used by tasks
+- `steam-project/logs/`: Airflow scheduler/task logs
+
+### Main DAG configuration
+
+The DAG in `steamspy_top1000_dag.py` is configured with:
+
+- Daily schedule at `0 12 * * *` (12:00 UTC)
+- `catchup=True` (Airflow can process past scheduled dates)
+- `max_active_runs=1` (one DAG run at a time)
+- retries enabled in `default_args` (`retries=1`, `retry_delay=5 minutes`)
+
+*Airflow UI*
+![Airflow UI](./images/Airflow%20UI.png)
+
+*Airflow DAG*
+![Airflow DAG](./images/Airflow%20DAG.png)
+
+### Order of tasks in the DAG
+
+The task flow is easier to read in stages:
+
+1. Fetch SteamSpy top 1000 list to local CSV
+2. In parallel after step 1:
+	- upload SteamSpy CSV to GCS bronze
+	- fetch Steam Store details to local CSV
+3. Upload Steam Store details CSV to GCS bronze
+4. Transform bronze -> silver:
+	- Steam API silver transform
+	- SteamSpy silver transform
+5. Build normalized tables from Steam API silver data (`games`, `genres`, `languages`)
+6. Upload silver parquet outputs to GCS:
+	- Steam API silver
+	- SteamSpy silver
+	- normalized tables
+7. Run dbt gold models after all required transforms are done
+
+So the pipeline is not only linear. Some tasks run in parallel, then later join before dbt.
+
+### How Airflow plugins work here
+
+The DAG file stays focused on orchestration, while business logic is stored in plugin modules.
+
+How it works:
+
+- The DAG imports Python functions from `plugins/steam_etl/*`.
+- Each `PythonOperator` calls one of these functions with `python_callable=...`.
+- Data between tasks is shared with XCom (for example file names returned by one task and used by the next).
+
+Why this design is useful:
+
+- cleaner DAG file (dependencies are easy to read),
+- logic is reusable and easier to test,
+- less risk when changing one transformation step.
+
+In short: the DAG is the "traffic controller", and plugin functions are the "workers" doing the real data processing.
+
 ## 5. Repository Structure
 
 Key paths:
 
+- `Makefile`: project automation commands for Docker, Airflow, dbt, and snapshot checks
 - `steam-project/docker-compose.yml`: local Airflow + Postgres stack
 - `steam-project/airflow/dags/steamspy_top1000_dag.py`: main orchestration DAG
 - `steam-project/airflow/plugins/steam_etl/ingestion.py`: API ingestion logic
@@ -108,6 +195,9 @@ The containers use:
 
 - `GOOGLE_APPLICATION_CREDENTIALS=/opt/airflow/gcp/credentials.json`
 
+*GCS bucket structure example*
+![GCS Bucket](./images/GCS%20Bucket.png)
+
 ### 7.3 Airflow variable
 
 The DAG expects Airflow Variable `gcp_bucket_name`.
@@ -163,6 +253,48 @@ Then:
 1. Unpause DAG `steamspy_top1000_etl`
 2. Trigger a run (or let schedule run)
 
+## 8.1 Makefile Automation (Recommended)
+
+The repository includes a top-level `Makefile` to simplify common commands.
+
+Location:
+
+- `Makefile` (project root)
+
+Show available commands:
+
+```bash
+make help
+```
+
+Common workflow:
+
+```bash
+make up
+make airflow-init
+make set-bucket BUCKET=<your-gcs-bucket>
+make unpause-dag
+make trigger-dag
+```
+
+Useful operational targets:
+
+- `make ps`
+- `make logs`
+- `make scheduler-logs`
+- `make dag-list-runs`
+- `make backfill DATE=YYYY-MM-DD`
+- `make dbt-build`
+- `make snapshot-latest`
+
+Windows note:
+
+- If `make` is not available in PowerShell, run via WSL:
+
+```bash
+wsl bash -lc "cd /mnt/c/Users/<user>/Projects/Steam_VideoGames && make help"
+```
+
 ## 9. Running dbt Manually (Optional)
 
 If you want to execute dbt manually inside the Airflow container:
@@ -196,6 +328,9 @@ Marts include:
 - `dim_genres`
 - `dim_languages`
 
+*BigQuery dataset example*
+![BigQuery](./images/BigQuery.png)
+
 ## 11. Data Quality and Reliability Notes
 
 - Silver layer includes cleaning, typing, and normalization logic.
@@ -205,16 +340,19 @@ Marts include:
 
 ## 12. Tableau Dashboard (Placeholder)
 
-I will add Tableau visualizations later.
+You will find my dashboard on Tableau Public: https://public.tableau.com/shared/NM8C8SWWW?:display_count=n&:origin=viz_share_link
 
-Planned dashboard content:
+It includes:
 
-- Localization coverage by language and genre
-- Trend of language support in popular games over time
-- Opportunity view: high-popularity games with lower localization breadth
-- Client targeting ideas for localization studio outreach
+- Titles with the highest number of languages
+- Top languages with and without non-English audio support
+- Audio Support Impact on Video Games Stats
+- Potential for Higher Localization Coverage (heatmap of language coverage by genre, popular games with missing localization)
+- Language coverage vs. performance
 
-Suggested Tableau data source:
+In case of service outage you will find the Power Point version of the dashboard in steam-project/dashboard.
+
+Data source for Tableau:
 
 - BigQuery Gold tables (`steam_gold` dataset), primarily `fct_games_daily`, `fct_games`, `dim_genres`, `dim_languages`
 

@@ -10,7 +10,7 @@
 }}
 
 with api_source as (
-    select
+    select # We need to cast and clean the data from the raw source, especially the release_date which can be in different formats or missing. We will also extract the snapshot date from the file name, which is in the format "steam_api_YYYY-MM-DD.parquet".
         cast(appid as int64) as appid,
         cast(price_usd as float64) as price_usd,
         cast(price_pln as float64) as price_pln,
@@ -26,12 +26,12 @@ with api_source as (
     from {{ source('silver_external', 'steam_api_raw') }}
     where appid is not null
 ),
-
+# We need to determine the primary genre for each game on each snapshot date. Since a game can have multiple genres, we will use a priority system to assign the most important genre as the primary genre. We will define the priority in a separate seed table called "genre_priority_seed", where we will assign lower numbers to more important genres (e.g. Action = 1, Adventure = 2, etc.) and higher numbers to less important genres (e.g. Indie = 10, Casual = 11, etc.). The "other" genre will have the lowest priority (e.g. 999) so it will only be assigned if no other genres are available.
 genre_priority as (
     select
         lower(trim(cast(genre as string))) as genre,
         cast(priority as int64) as priority
-    from {{ ref('genre_priority_seed') }}
+    from {{ ref('genre_priority_seed') }} # This is a small seed table that we will create to define the priority of genres when determining the primary genre. We will assign lower numbers to more important genres (e.g. Action = 1, Adventure = 2, etc.) and higher numbers to less important genres (e.g. Indie = 10, Casual = 11, etc.). The "other" genre will have the lowest priority (e.g. 999) so it will only be assigned if no other genres are available.
 ),
 
 api_daily as (

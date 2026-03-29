@@ -304,6 +304,86 @@ docker compose exec airflow-webserver bash -lc "python /opt/airflow/dbt/scripts/
 docker compose exec airflow-webserver bash -lc "dbt build --project-dir /opt/airflow/dbt --profiles-dir /opt/airflow/dbt --select +path:models/marts"
 ```
 
+## 9.1 dbt Models Explained (What They Do and Why)
+
+This project uses dbt in two layers:
+
+- **Staging models**: clean and standardize raw external tables.
+- **Mart models**: build analysis-ready fact and dimension tables.
+
+### Staging models
+
+- `stg_steam_api`
+	- **What it does**: casts Steam API columns to correct types (`appid`, prices, date), keeps one latest row per appid.
+	- **Why**: removes duplicates and type issues before joining with other sources.
+
+- `stg_steamspy`
+	- **What it does**: casts SteamSpy metrics to numeric types, keeps one latest row per appid.
+	- **Why**: ensures popularity metrics are consistent and safe for aggregations.
+
+- `stg_languages`
+	- **What it does**: cleans normalized language rows, removes HTML fragments/noise, keeps `has_audio_support` as boolean.
+	- **Why**: language analysis depends on clean, one-language-per-row data.
+
+### Mart models
+
+- `fct_games`
+	- **What it does**: main game-level fact table by joining staged Steam API and SteamSpy data.
+	- **Why**: provides one central table for pricing, engagement, and review KPIs.
+
+- `fct_games_daily` (incremental)
+	- **What it does**: stores per-day snapshots (`appid`, `snapshot_date`) and merges only new/changed rows.
+	- **Why**: supports trend analysis over time and keeps daily refresh efficient.
+
+- `dim_genres`
+	- **What it does**: explodes comma-separated genres into one row per `appid + genre`.
+	- **Why**: makes genre filtering/grouping simple in BI tools.
+
+- `dim_languages`
+	- **What it does**: one row per `appid + language`, with audio support flag and stable key.
+	- **Why**: enables clean language coverage analysis, including audio vs non-audio support.
+
+## 9.2 Silver Layer Transformations (What and Why)
+
+The silver layer is built in Airflow plugin code (`steam-project/airflow/plugins/steam_etl/silver.py`) before dbt runs.
+
+Main transformations and reasons:
+
+- **Schema safety checks**
+	- Missing expected columns are created when needed.
+	- **Why**: avoids task failure when source files have small schema differences.
+
+- **Date cleaning (`release_date`)**
+	- Converts to datetime and creates `release_date_missing` flag.
+	- **Why**: keeps date logic reliable while preserving information about missing values.
+
+- **Price cleaning (`price_usd`, `price_pln`)**
+	- Removes currency symbols/text, normalizes decimal separators, converts to numbers.
+	- **Why**: allows valid numeric comparisons and aggregations in SQL/BI.
+
+- **Language code cleanup**
+	- Replaces internal Steam tokens (for example `#lang_*`) with human-readable names.
+	- **Why**: improves readability and avoids noisy categories in analysis.
+
+- **Deduplication by `appid`**
+	- Keeps one row per app in silver outputs.
+	- **Why**: prevents double-counting in downstream models.
+
+- **SteamSpy value cleanup**
+	- Maps owners ranges to categories and clips negative metric values to 0.
+	- **Why**: improves consistency and protects KPI calculations from invalid values.
+
+- **Normalization to separate parquet tables**
+	- Builds `games`, `genres`, and `languages` tables from silver API data.
+	- Splits comma-separated fields and explodes them to row-level format.
+	- Filters out `Free To Play` from genres as a business model label.
+	- Extracts audio-support markers from language text.
+	- **Why**: creates analysis-ready tables that are easier to query and join.
+
+- **Incremental metadata tracking**
+	- Saves last processed date in `silver_metadata.txt` for each silver/normalized table.
+	- **Why**: supports safe reruns and avoids unnecessary reprocessing.
+
 ## 10. Expected Outputs
 
 ### Bronze (local + GCS)
@@ -338,9 +418,17 @@ Marts include:
 - The pipeline uses task retries and file-based logs in Airflow.
 - Steam Store requests are throttled in ingestion code to reduce risk of temporary blocking.
 
-## 12. Tableau Dashboard (Placeholder)
+## 12. Tableau Dashboard
 
 You will find my dashboard on Tableau Public: https://public.tableau.com/shared/NM8C8SWWW?:display_count=n&:origin=viz_share_link
+
+If the Tableau Public link is temporarily unavailable, preview screenshots are included below:
+
+![Example Dashboard 1](./images/Example_Dashboard1.png)
+![Example Dashboard 2](./images/Example_Dashboard2.png)
+
+PowerPoint version (local fallback):
+[Deep Dive Video Game Localization Trends on Steam.pptx](steam-project/dashboard/Deep%20Dive%20Video%20Game%20Localization%20Trends%20on%20Steam.pptx)
 
 It includes:
 
@@ -369,5 +457,4 @@ Before sharing your run with other participants, verify:
 ## 14. Known Limitations and Next Steps
 
 - No Terraform/IaC yet (infrastructure setup is manual)
-- Tableau dashboard will be added in a later update
-- README can later include screenshots of DAG runs and final charts
+
